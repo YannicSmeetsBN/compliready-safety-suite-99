@@ -48,12 +48,14 @@ export const Sidebar = () => {
       ${collapsed ? "w-20" : "w-64"} 
       transition-all duration-300 flex flex-col`}
     >
-      <div className="p-4 flex justify-center mb-6 bg-white rounded-lg">
-        <img 
-          src="/lovable-uploads/3f76d639-79b2-4b59-a4c7-ab9802b94a18.png" 
-          alt="CompliReady Logo" 
-          className={`${collapsed ? "w-12" : "w-36"} transition-all duration-300`}
-        />
+      <div className="p-4 flex justify-center mb-6">
+        <div className="bg-white rounded-lg p-2 flex justify-center w-full">
+          <img 
+            src="/lovable-uploads/3f76d639-79b2-4b59-a4c7-ab9802b94a18.png" 
+            alt="CompliReady Logo" 
+            className={`${collapsed ? "w-12" : "w-36"} transition-all duration-300`}
+          />
+        </div>
       </div>
 
       <div className="flex-1 px-2 space-y-1 overflow-y-auto scrollbar-thin">

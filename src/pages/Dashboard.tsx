@@ -30,7 +30,10 @@ import {
   Tooltip,
   Legend,
   LineChart,
-  Line
+  Line,
+  PieChart,
+  Pie,
+  Cell
 } from "recharts";
 
 // Demo data for occupancy chart
@@ -56,6 +59,36 @@ const certificateTypeData = [
   { name: 'EHBO', aantal: 8 },
   { name: 'Heftruckcertificaat', aantal: 6 },
   { name: 'ISO/NEN', aantal: 3 },
+];
+
+// Demo data for certificate status donut chart
+const certificateStatusData = [
+  { name: 'Actueel', value: 32, color: '#4ade80' },
+  { name: 'Bijna verlopen', value: 8, color: '#f97316' },
+  { name: 'Verlopen', value: 2, color: '#ef4444' },
+];
+
+// Demo data for incidents over time
+const incidentsOverTimeData = [
+  { month: 'Jan', aantal: 2 },
+  { month: 'Feb', aantal: 3 },
+  { month: 'Mar', aantal: 1 },
+  { month: 'Apr', aantal: 4 },
+  { month: 'Mei', aantal: 2 },
+  { month: 'Jun', aantal: 3 },
+  { month: 'Jul', aantal: 1 },
+  { month: 'Aug', aantal: 0 },
+  { month: 'Sep', aantal: 2 },
+  { month: 'Okt', aantal: 3 },
+  { month: 'Nov', aantal: 1 },
+  { month: 'Dec', aantal: 2 },
+];
+
+// Demo data for equipment status
+const equipmentStatusData = [
+  { name: 'Actueel', value: 20, color: '#4ade80' },
+  { name: 'Bijna verlopen', value: 4, color: '#f97316' },
+  { name: 'Verlopen', value: 1, color: '#ef4444' },
 ];
 
 const Dashboard = () => {
@@ -151,15 +184,44 @@ const Dashboard = () => {
   const exerciseWarnings = 2;
   const exerciseDangers = 0;
 
+  // Calculate total compliance score
+  const complianceScore = 78; // Example score based on weighted factors
+
   return (
     <div className="main-layout">
       <Sidebar />
       <div className="flex-1 ml-64">
         <Header />
         <main className="main-content">
-          <h1 className="page-title">Dashboard</h1>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="page-title">Dashboard</h1>
+            
+            {/* Dashboard filters */}
+            <div className="flex items-center gap-3">
+              <select className="px-3 py-2 border rounded text-sm">
+                <option>Alle werkgevers</option>
+                <option>Werkgever A</option>
+                <option>Werkgever B</option>
+              </select>
+              <select className="px-3 py-2 border rounded text-sm">
+                <option>Alle locaties</option>
+                <option>Hoofdkantoor</option>
+                <option>Productie</option>
+              </select>
+              <select className="px-3 py-2 border rounded text-sm">
+                <option>Alle afdelingen</option>
+                <option>Administratie</option>
+                <option>Logistiek</option>
+              </select>
+              <select className="px-3 py-2 border rounded text-sm">
+                <option>Laatste 30 dagen</option>
+                <option>Dit kwartaal</option>
+                <option>Dit jaar</option>
+              </select>
+            </div>
+          </div>
           
-          {/* Nieuwe layout met Grafiek en Risico-overzicht */}
+          {/* First row: Graphs and Risk overview */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="lg:col-span-2">
               <Card>
@@ -199,11 +261,11 @@ const Dashboard = () => {
                   <CardContent>
                     <div className="text-center">
                       <div className="inline-flex items-center justify-center rounded-full bg-orange-100 p-6 mb-2">
-                        <span className="text-4xl font-bold text-orange-600">78%</span>
+                        <span className="text-4xl font-bold text-orange-600">{complianceScore}%</span>
                       </div>
                       <p className="text-sm text-muted-foreground">Uw veiligheidsscore</p>
                       <div className="mt-4">
-                        <Progress value={78} className="h-2" />
+                        <Progress value={complianceScore} className="h-2" />
                       </div>
                     </div>
                   </CardContent>
@@ -252,7 +314,117 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Certificaattypes Grafiek */}
+          {/* Second row: Status charts */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Certificaten status */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Certificaten Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-56 flex justify-center">
+                  <PieChart width={200} height={200}>
+                    <Pie
+                      data={certificateStatusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {certificateStatusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [`${value} certificaten`, 'Aantal']} />
+                  </PieChart>
+                </div>
+                <div className="flex justify-around text-xs text-center mt-2">
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
+                    <p>Actueel</p>
+                  </div>
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                    <p>Bijna verlopen</p>
+                  </div>
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
+                    <p>Verlopen</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Incidenten over tijd */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Incidenten Over Tijd</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={incidentsOverTimeData}>
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Veiligheidsmiddelen status */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Veiligheidsmiddelen Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-56 flex justify-center">
+                  <PieChart width={200} height={200}>
+                    <Pie
+                      data={equipmentStatusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {equipmentStatusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [`${value} middelen`, 'Aantal']} />
+                  </PieChart>
+                </div>
+                <div className="flex justify-around text-xs text-center mt-2">
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
+                    <p>Actueel</p>
+                  </div>
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                    <p>Bijna verlopen</p>
+                  </div>
+                  <div>
+                    <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
+                    <p>Verlopen</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Third row: Certificate types */}
           <div className="mb-8">
             <Card>
               <CardHeader>
