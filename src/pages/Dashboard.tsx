@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -175,7 +174,6 @@ const Dashboard = () => {
 
   const complianceScore = 78;
 
-  // Function to determine compliance score color
   const getComplianceScoreColor = (score: number) => {
     if (score >= 80) return "bg-green-100 text-green-600";
     if (score >= 60) return "bg-orange-100 text-orange-600";
@@ -355,12 +353,12 @@ const Dashboard = () => {
                 <div className="h-64">
                   <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart>
+                      <RechartsBarChart data={incidentsOverTimeData}>
                         <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip content={<ChartTooltipContent />} />
                         <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                      </RechartsBarChart>
                     </ResponsiveContainer>
                   </ChartContainer>
                 </div>
