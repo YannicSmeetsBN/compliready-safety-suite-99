@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -19,7 +18,8 @@ import {
   ChevronRight,
   Clock,
   FileText,
-  AlertTriangle
+  AlertTriangle,
+  Users
 } from "lucide-react";
 
 // Demo data for clients
