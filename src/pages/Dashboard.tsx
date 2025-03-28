@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -16,11 +15,6 @@ import {
   ChevronRight,
   Activity
 } from "lucide-react";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent
-} from "@/components/ui/chart";
 import {
   Bar,
   BarChart as RechartsBarChart,
@@ -281,6 +275,31 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               </div>
+
+              <div className="mt-6">
+                <h2 className="page-subtitle mb-4">Recente signaleringen</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <NotificationCard
+                    title="Certificaten"
+                    icon={<FileText size={20} />}
+                    notifications={certificateNotifications}
+                    viewAllLink="/certificates"
+                  />
+                  <NotificationCard
+                    title="Veiligheidsmiddelen & PBM's"
+                    icon={<Shield size={20} />}
+                    notifications={safetyNotifications}
+                    viewAllLink="/safety?tab=pbm"
+                  />
+                </div>
+
+                <NotificationCard
+                  title="Geplande oefeningen"
+                  icon={<Calendar size={20} />}
+                  notifications={exerciseNotifications}
+                  viewAllLink="/safety?tab=exercises"
+                />
+              </div>
             </div>
 
             <div className="lg:col-span-1">
@@ -341,35 +360,6 @@ const Dashboard = () => {
                 </Card>
               </div>
             </div>
-          </div>
-          
-          {/* Title for Recente signaleringen section */}
-          <h2 className="page-subtitle mb-4">Recente signaleringen</h2>
-          
-          {/* Recente signaleringen certificaten en veiligheidsmiddelen onder de cirkeldiagrammen */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <NotificationCard
-              title="Certificaten"
-              icon={<FileText size={20} />}
-              notifications={certificateNotifications}
-              viewAllLink="/certificates"
-            />
-            <NotificationCard
-              title="Veiligheidsmiddelen & PBM's"
-              icon={<Shield size={20} />}
-              notifications={safetyNotifications}
-              viewAllLink="/safety?tab=pbm"
-            />
-          </div>
-          
-          {/* Geplande oefeningen onder de signaleringen */}
-          <div className="mb-8">
-            <NotificationCard
-              title="Geplande oefeningen"
-              icon={<Calendar size={20} />}
-              notifications={exerciseNotifications}
-              viewAllLink="/safety?tab=exercises"
-            />
           </div>
           
           <h2 className="page-subtitle">Statistieken</h2>
