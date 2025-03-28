@@ -408,9 +408,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="h-64">
-                  <ChartContainer config={
-                    { aantal: { label: "Aantal certificaten", color: "#F9B47C" } }
-                  }>
+                  <ChartContainer config={{ aantal: { label: "Aantal certificaten", color: "#F9B47C" } }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <RechartsBarChart data={certificateTypeData}>
                         <XAxis dataKey="name" />
