@@ -15,10 +15,23 @@ import {
   ChevronRight,
   Activity
 } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userRole, userName, userLocation } = useAuth();
+  
+  const certificateStatusData = [
+    { name: "Actueel", value: 18, color: "#22c55e" },
+    { name: "Bijna verlopen", value: 5, color: "#f97316" },
+    { name: "Verlopen", value: 3, color: "#ef4444" },
+  ];
+
+  const equipmentStatusData = [
+    { name: "Actueel", value: 24, color: "#22c55e" },
+    { name: "Bijna verlopen", value: 8, color: "#f97316" },
+    { name: "Verlopen", value: 2, color: "#ef4444" },
+  ];
 
   const employeeCertificateNotifications = [
     {
