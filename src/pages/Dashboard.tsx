@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -10,9 +11,7 @@ import {
   Users, 
   Bell, 
   Calendar, 
-  BarChart, 
   Shield, 
-  AlertTriangle,
   ChevronRight,
   Activity
 } from "lucide-react";
@@ -167,8 +166,6 @@ const Dashboard = () => {
   const certificateDangers = 1;
   const safetyWarnings = 1;
   const safetyDangers = 1;
-  const incidentWarnings = 2;
-  const incidentDangers = 1;
   const exerciseWarnings = 2;
   const exerciseDangers = 0;
 
@@ -298,25 +295,7 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
                 
-                <Card className="md:col-span-2">
-                  <CardHeader className="pb-2">
-                    <CardTitle>Incidenten</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[200px]">
-                      <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RechartsBarChart data={incidentsOverTimeData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
-                          </RechartsBarChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </div>
-                  </CardContent>
-                </Card>
+                
               </div>
             </div>
 
@@ -409,8 +388,7 @@ const Dashboard = () => {
               title="Incidenten (30 dagen)"
               value={3}
               icon={<Bell size={24} />}
-              trend={{ value: "25%", increase: false }}
-              color={getStatusColor(incidentWarnings, incidentDangers)}
+              color="orange"
               onClick={() => navigate("/safety?tab=incidents")}
             />
           </div>
