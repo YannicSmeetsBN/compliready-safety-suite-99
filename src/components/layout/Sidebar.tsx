@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -7,7 +6,6 @@ import {
   FileText, 
   BarChart, 
   Settings,
-  Search,
   Bell,
   AlertTriangle,
   Phone
@@ -48,7 +46,7 @@ export const Sidebar = () => {
       ${collapsed ? "w-20" : "w-64"} 
       transition-all duration-300 flex flex-col`}
     >
-      <div className="p-4 flex justify-center mb-6">
+      <div className="p-4 flex justify-center mb-6 bg-white rounded-lg">
         <img 
           src="/lovable-uploads/3f76d639-79b2-4b59-a4c7-ab9802b94a18.png" 
           alt="CompliReady Logo" 
