@@ -303,7 +303,7 @@ const Dashboard = () => {
                     <CardTitle>Incidenten</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-[180px]">
+                    <div className="h-[200px]">
                       <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <RechartsBarChart data={incidentsOverTimeData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
