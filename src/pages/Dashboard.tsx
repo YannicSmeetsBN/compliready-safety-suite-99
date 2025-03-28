@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -384,42 +385,41 @@ const Dashboard = () => {
                     </ul>
                   </CardContent>
                 </Card>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <StatCard
+                    title="Actieve medewerkers"
+                    value={18}
+                    icon={<Users size={20} />}
+                    color="blue"
+                    onClick={() => navigate("/employees")}
+                  />
+                  <StatCard
+                    title="Actieve certificaten"
+                    value={42}
+                    icon={<FileText size={20} />}
+                    trend={{ value: "8%", increase: true }}
+                    color={getStatusColor(certificateWarnings, certificateDangers)}
+                    onClick={() => navigate("/certificates")}
+                  />
+                  <StatCard
+                    title="Veiligheidsmiddelen"
+                    value={25}
+                    icon={<Shield size={20} />}
+                    trend={{ value: "5%", increase: true }}
+                    color={getStatusColor(safetyWarnings, safetyDangers)}
+                    onClick={() => navigate("/safety?tab=pbm")}
+                  />
+                  <StatCard
+                    title="Incidenten (30d)"
+                    value={3}
+                    icon={<Bell size={20} />}
+                    color="orange"
+                    onClick={() => navigate("/safety?tab=incidents")}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          
-          <h2 className="page-subtitle">Statistieken</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard
-              title="Actieve medewerkers"
-              value={18}
-              icon={<Users size={24} />}
-              color="blue"
-              onClick={() => navigate("/employees")}
-            />
-            <StatCard
-              title="Actieve certificaten"
-              value={42}
-              icon={<FileText size={24} />}
-              trend={{ value: "8%", increase: true }}
-              color={getStatusColor(certificateWarnings, certificateDangers)}
-              onClick={() => navigate("/certificates")}
-            />
-            <StatCard
-              title="Veiligheidsmiddelen"
-              value={25}
-              icon={<Shield size={24} />}
-              trend={{ value: "5%", increase: true }}
-              color={getStatusColor(safetyWarnings, safetyDangers)}
-              onClick={() => navigate("/safety?tab=pbm")}
-            />
-            <StatCard
-              title="Incidenten (30 dagen)"
-              value={3}
-              icon={<Bell size={24} />}
-              color="orange"
-              onClick={() => navigate("/safety?tab=incidents")}
-            />
           </div>
         </main>
       </div>

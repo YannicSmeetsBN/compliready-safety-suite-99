@@ -24,25 +24,25 @@ export const StatCard = ({ title, value, icon, trend, color = "blue", onClick }:
 
   return (
     <div 
-      className={`dashboard-card dashboard-stat-card ${onClick ? 'cursor-pointer hover:shadow-lg transition-all' : ''}`}
+      className={`dashboard-card dashboard-stat-card p-3 h-full ${onClick ? 'cursor-pointer hover:shadow-lg transition-all' : ''}`}
       onClick={onClick}
     >
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="card-header">{title}</h3>
-          <p className="stat-value">{value}</p>
+          <h3 className="text-sm font-medium mb-1">{title}</h3>
+          <p className="text-xl font-bold">{value}</p>
         </div>
-        <div className={`rounded-full p-3 ${colors[color]}`}>
+        <div className={`rounded-full p-2 ${colors[color]}`}>
           {icon}
         </div>
       </div>
       
       {trend && (
-        <div className="mt-4 flex items-center">
-          <span className={`mr-2 ${trend.increase ? "text-green-600" : "text-red-600"}`}>
+        <div className="mt-2 flex items-center">
+          <span className={`mr-1 text-xs ${trend.increase ? "text-green-600" : "text-red-600"}`}>
             {trend.increase ? "↑" : "↓"} {trend.value}
           </span>
-          <span className="text-gray-500 text-sm">t.o.v. vorige maand</span>
+          <span className="text-gray-500 text-xs">t.o.v. vorige maand</span>
         </div>
       )}
     </div>
