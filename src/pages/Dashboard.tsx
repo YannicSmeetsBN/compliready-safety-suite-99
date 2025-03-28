@@ -343,6 +343,9 @@ const Dashboard = () => {
             </div>
           </div>
           
+          {/* Title for Recente signaleringen section */}
+          <h2 className="page-subtitle mb-4">Recente signaleringen</h2>
+          
           {/* Recente signaleringen certificaten en veiligheidsmiddelen onder de cirkeldiagrammen */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <NotificationCard
@@ -359,7 +362,7 @@ const Dashboard = () => {
             />
           </div>
           
-          {/* Geplande oefeningen in een aparte rij */}
+          {/* Geplande oefeningen onder de signaleringen */}
           <div className="mb-8">
             <NotificationCard
               title="Geplande oefeningen"
