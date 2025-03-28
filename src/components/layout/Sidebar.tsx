@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Home, 
   Users, 
@@ -18,9 +19,12 @@ type SidebarItemProps = {
   label: string;
   to: string;
   active: boolean;
+  hidden?: boolean;
 };
 
-const SidebarItem = ({ icon, label, to, active }: SidebarItemProps) => {
+const SidebarItem = ({ icon, label, to, active, hidden }: SidebarItemProps) => {
+  if (hidden) return null;
+  
   return (
     <Link
       to={to}
@@ -39,6 +43,7 @@ const SidebarItem = ({ icon, label, to, active }: SidebarItemProps) => {
 export const Sidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { userRole, checkAccess } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -64,54 +69,63 @@ export const Sidebar = () => {
           label="Dashboard" 
           to="/dashboard" 
           active={isActive("/dashboard")} 
+          hidden={userRole === "trainer"}
         />
         <SidebarItem 
           icon={<Users />} 
           label="Medewerkers" 
           to="/employees" 
           active={isActive("/employees")} 
+          hidden={userRole === "trainer"}
         />
         <SidebarItem 
           icon={<FileText />} 
           label="Certificaten" 
           to="/certificates" 
           active={isActive("/certificates")} 
+          hidden={userRole === "trainer" || userRole === "employee"}
         />
         <SidebarItem 
           icon={<Bell />} 
           label="Veiligheidsbeheer" 
           to="/safety" 
           active={isActive("/safety")} 
+          hidden={userRole === "trainer" || userRole === "employee"}
         />
         <SidebarItem 
           icon={<AlertTriangle />} 
           label="RI&E Generator" 
           to="/risk-assessment" 
           active={isActive("/risk-assessment")} 
+          hidden={userRole === "trainer" || userRole === "employee"}
         />
         <SidebarItem 
           icon={<Phone />} 
           label="BHV-Oproep" 
           to="/emergency-call" 
           active={isActive("/emergency-call")} 
+          hidden={userRole === "trainer"}
         />
         <SidebarItem 
           icon={<BarChart />} 
           label="Rapportages" 
           to="/reports" 
           active={isActive("/reports")} 
+          hidden={userRole === "trainer" || userRole === "employee"}
         />
         <SidebarItem 
           icon={<Building />} 
           label="Partnerportaal" 
           to="/partner-portal" 
           active={isActive("/partner-portal")} 
+          hidden={userRole === "employer" || userRole === "employee"}
         />
         <SidebarItem 
           icon={<Settings />} 
           label="Instellingen" 
           to="/settings" 
           active={isActive("/settings")} 
+          hidden={userRole === "trainer" || userRole === "employee"}
         />
       </div>
 

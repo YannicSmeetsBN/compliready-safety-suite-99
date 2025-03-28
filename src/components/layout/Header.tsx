@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Search, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import {
 
 export const Header = () => {
   const [notifications, setNotifications] = useState(3);
+  const { userName, userRole, logout } = useAuth();
   
   return (
     <header className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">
@@ -74,16 +76,24 @@ export const Header = () => {
               <div className="w-8 h-8 bg-compliblue rounded-full flex items-center justify-center text-white">
                 <User size={16} />
               </div>
-              <span className="font-medium text-sm">Admin</span>
+              <span className="font-medium text-sm">{userName || "Gebruiker"}</span>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Mijn account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div>
+                <p>{userName || "Gebruiker"}</p>
+                <p className="text-xs text-gray-500 capitalize">{userRole || "Gast"}</p>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profiel</DropdownMenuItem>
             <DropdownMenuItem>Instellingen</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Uitloggen</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Uitloggen</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -3,8 +3,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Index from "./pages/Index";
+import RoleSelection from "./pages/RoleSelection";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Certificates from "./pages/Certificates";
 import Employees from "./pages/Employees";
@@ -25,20 +29,76 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/certificates" element={<Certificates />} />
-          <Route path="/employees" element={<Employees />} />
-          <Route path="/safety" element={<SafetyManagement />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/risk-assessment" element={<RiskAssessment />} />
-          <Route path="/emergency-call" element={<EmergencyCall />} />
-          <Route path="/partner-portal" element={<PartnerPortal />} />
-          <Route path="/partner-portal/client/:clientId" element={<ClientDetail />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/role-selection" element={<RoleSelection />} />
+            <Route path="/login" element={<Login />} />
+            
+            {/* Protected routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute allowedRoles={["employee", "employer"]}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/employees" element={
+              <ProtectedRoute allowedRoles={["employee", "employer"]}>
+                <Employees />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/certificates" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <Certificates />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/safety" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <SafetyManagement />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/reports" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <Reports />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/settings" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <Settings />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/risk-assessment" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <RiskAssessment />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/emergency-call" element={
+              <ProtectedRoute allowedRoles={["employee", "employer"]}>
+                <EmergencyCall />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/partner-portal" element={
+              <ProtectedRoute allowedRoles={["trainer"]}>
+                <PartnerPortal />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/partner-portal/client/:clientId" element={
+              <ProtectedRoute allowedRoles={["trainer"]}>
+                <ClientDetail />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

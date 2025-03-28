@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,22 +11,52 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Get the selected role from localStorage
+    const role = localStorage.getItem("selectedRole");
+    if (!role) {
+      navigate("/role-selection");
+      return;
+    }
+    setSelectedRole(role);
+  }, [navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simuleer login proces
+    // Simulate login process
     setTimeout(() => {
       setLoading(false);
       
-      // Demo-login voor nu met vaste credentials
-      if (email === "admin@compliready.nl" && password === "admin") {
+      // Check credentials based on the selected role
+      if (selectedRole === "employee" && email === "employee@compliready.nl" && password === "employee") {
+        localStorage.setItem("userRole", "employee");
+        localStorage.setItem("userName", "Jan Jansen");
+        localStorage.setItem("userLocation", "Hoofdkantoor");
         toast({
-          title: "Ingelogd!",
-          description: "U bent succesvol ingelogd.",
+          title: "Ingelogd als medewerker!",
+          description: "U bent succesvol ingelogd als medewerker.",
+        });
+        navigate("/dashboard");
+      } else if (selectedRole === "trainer" && email === "trainer@compliready.nl" && password === "trainer") {
+        localStorage.setItem("userRole", "trainer");
+        localStorage.setItem("userName", "Piet Opleider");
+        toast({
+          title: "Ingelogd als opleider!",
+          description: "U bent succesvol ingelogd als opleider.",
+        });
+        navigate("/partner-portal");
+      } else if (selectedRole === "employer" && email === "admin@compliready.nl" && password === "admin") {
+        localStorage.setItem("userRole", "employer");
+        localStorage.setItem("userName", "Admin");
+        toast({
+          title: "Ingelogd als werkgever!",
+          description: "U bent succesvol ingelogd als werkgever.",
         });
         navigate("/dashboard");
       } else {
@@ -37,6 +67,33 @@ export const LoginForm = () => {
         });
       }
     }, 1000);
+  };
+
+  // Helper function to get role-specific credentials
+  const getRoleCredentials = () => {
+    switch(selectedRole) {
+      case "employee":
+        return "employee@compliready.nl / employee";
+      case "trainer":
+        return "trainer@compliready.nl / trainer";
+      case "employer":
+        return "admin@compliready.nl / admin";
+      default:
+        return "";
+    }
+  };
+
+  const getRoleName = () => {
+    switch(selectedRole) {
+      case "employee":
+        return "medewerker";
+      case "trainer":
+        return "opleider";
+      case "employer":
+        return "werkgever";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -87,12 +144,22 @@ export const LoginForm = () => {
         className="w-full bg-compliblue hover:bg-compliblue/90" 
         disabled={loading}
       >
-        {loading ? "Inloggen..." : "Inloggen"}
+        {loading ? "Inloggen..." : `Inloggen als ${getRoleName()}`}
       </Button>
       
       <div className="text-center text-sm text-gray-500">
         <span>Voor demo-doeleinden gebruik: </span>
-        <span className="font-medium">admin@compliready.nl / admin</span>
+        <span className="font-medium">{getRoleCredentials()}</span>
+      </div>
+
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={() => navigate("/role-selection")}
+          className="text-sm text-compliblue hover:underline"
+        >
+          Terug naar rolselectie
+        </button>
       </div>
     </form>
   );
