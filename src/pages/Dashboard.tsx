@@ -343,9 +343,8 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Recente signaleringen moved between circle diagrams and statistics section */}
-          <h2 className="page-subtitle mb-4">Recente signaleringen</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Recente signaleringen certificaten en veiligheidsmiddelen onder de cirkeldiagrammen */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <NotificationCard
               title="Certificaten"
               icon={<FileText size={20} />}
@@ -358,6 +357,10 @@ const Dashboard = () => {
               notifications={safetyNotifications}
               viewAllLink="/safety?tab=pbm"
             />
+          </div>
+          
+          {/* Geplande oefeningen in een aparte rij */}
+          <div className="mb-8">
             <NotificationCard
               title="Geplande oefeningen"
               icon={<Calendar size={20} />}
