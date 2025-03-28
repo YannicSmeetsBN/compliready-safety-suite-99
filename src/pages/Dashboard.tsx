@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -62,21 +63,6 @@ const certificateStatusData = [
   { name: 'Actueel', value: 32, color: '#4ade80' },
   { name: 'Bijna verlopen', value: 8, color: '#f97316' },
   { name: 'Verlopen', value: 2, color: '#ef4444' },
-];
-
-const incidentsOverTimeData = [
-  { month: 'Jan', aantal: 2 },
-  { month: 'Feb', aantal: 3 },
-  { month: 'Mar', aantal: 1 },
-  { month: 'Apr', aantal: 4 },
-  { month: 'Mei', aantal: 2 },
-  { month: 'Jun', aantal: 3 },
-  { month: 'Jul', aantal: 1 },
-  { month: 'Aug', aantal: 0 },
-  { month: 'Sep', aantal: 2 },
-  { month: 'Okt', aantal: 3 },
-  { month: 'Nov', aantal: 1 },
-  { month: 'Dec', aantal: 2 },
 ];
 
 const equipmentStatusData = [
@@ -294,8 +280,6 @@ const Dashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
-                
-                
               </div>
             </div>
 
@@ -393,6 +377,7 @@ const Dashboard = () => {
             />
           </div>
           
+          {/* Moved the signaleringen section below the circle diagrams */}
           <h2 className="page-subtitle">Recente signaleringen</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <NotificationCard
