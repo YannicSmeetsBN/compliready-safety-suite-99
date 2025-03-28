@@ -22,7 +22,7 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
         variant: "destructive",
       });
     }
-  }, [location.pathname, isAuthenticated, userRole]);
+  }, [location.pathname, isAuthenticated, userRole, toast, allowedRoles, checkAccess]);
 
   // Not authenticated at all
   if (!isAuthenticated) {
@@ -34,6 +34,8 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
     // Redirect to an appropriate page based on role
     if (userRole === "trainer") {
       return <Navigate to="/partner-portal" />;
+    } else if (userRole === "employee") {
+      return <Navigate to="/dashboard" />;
     } else {
       return <Navigate to="/dashboard" />;
     }

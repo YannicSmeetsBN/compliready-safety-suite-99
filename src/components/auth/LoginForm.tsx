@@ -46,6 +46,7 @@ export const LoginForm = () => {
       } else if (selectedRole === "trainer" && email === "trainer@compliready.nl" && password === "trainer") {
         localStorage.setItem("userRole", "trainer");
         localStorage.setItem("userName", "Piet Opleider");
+        localStorage.setItem("userLocation", "Opleidingscentrum");
         toast({
           title: "Ingelogd als opleider!",
           description: "U bent succesvol ingelogd als opleider.",
@@ -54,6 +55,7 @@ export const LoginForm = () => {
       } else if (selectedRole === "employer" && email === "admin@compliready.nl" && password === "admin") {
         localStorage.setItem("userRole", "employer");
         localStorage.setItem("userName", "Admin");
+        localStorage.setItem("userLocation", "Hoofdkantoor");
         toast({
           title: "Ingelogd als werkgever!",
           description: "U bent succesvol ingelogd als werkgever.",

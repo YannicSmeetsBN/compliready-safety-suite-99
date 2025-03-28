@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -43,9 +43,14 @@ const SidebarItem = ({ icon, label, to, active, hidden }: SidebarItemProps) => {
 export const Sidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
-  const { userRole, checkAccess } = useAuth();
+  const { userRole } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
+
+  // Determine visibility based on user role
+  const isEmployee = userRole === "employee";
+  const isEmployer = userRole === "employer";
+  const isTrainer = userRole === "trainer";
 
   return (
     <div 
@@ -64,68 +69,85 @@ export const Sidebar = () => {
       </div>
 
       <div className="flex-1 px-2 space-y-1 overflow-y-auto scrollbar-thin">
+        {/* Dashboard - visible to employees and employers */}
         <SidebarItem 
           icon={<Home />} 
           label="Dashboard" 
           to="/dashboard" 
           active={isActive("/dashboard")} 
-          hidden={userRole === "trainer"}
+          hidden={isTrainer}
         />
+        
+        {/* Employees - visible to employees and employers */}
         <SidebarItem 
           icon={<Users />} 
           label="Medewerkers" 
           to="/employees" 
           active={isActive("/employees")} 
-          hidden={userRole === "trainer"}
+          hidden={isTrainer}
         />
+        
+        {/* Certificates - visible to employers only */}
         <SidebarItem 
           icon={<FileText />} 
           label="Certificaten" 
           to="/certificates" 
           active={isActive("/certificates")} 
-          hidden={userRole === "trainer" || userRole === "employee"}
+          hidden={!isEmployer}
         />
+        
+        {/* Safety - visible to employers only */}
         <SidebarItem 
           icon={<Bell />} 
           label="Veiligheidsbeheer" 
           to="/safety" 
           active={isActive("/safety")} 
-          hidden={userRole === "trainer" || userRole === "employee"}
+          hidden={!isEmployer}
         />
+        
+        {/* Risk Assessment - visible to employers only */}
         <SidebarItem 
           icon={<AlertTriangle />} 
           label="RI&E Generator" 
           to="/risk-assessment" 
           active={isActive("/risk-assessment")} 
-          hidden={userRole === "trainer" || userRole === "employee"}
+          hidden={!isEmployer}
         />
+        
+        {/* Emergency Call - visible to employees and employers */}
         <SidebarItem 
           icon={<Phone />} 
           label="BHV-Oproep" 
           to="/emergency-call" 
           active={isActive("/emergency-call")} 
-          hidden={userRole === "trainer"}
+          hidden={isTrainer}
         />
+        
+        {/* Reports - visible to employers only */}
         <SidebarItem 
           icon={<BarChart />} 
           label="Rapportages" 
           to="/reports" 
           active={isActive("/reports")} 
-          hidden={userRole === "trainer" || userRole === "employee"}
+          hidden={!isEmployer}
         />
+        
+        {/* Partner Portal - visible to trainers only */}
         <SidebarItem 
           icon={<Building />} 
           label="Partnerportaal" 
           to="/partner-portal" 
           active={isActive("/partner-portal")} 
-          hidden={userRole === "employer" || userRole === "employee"}
+          hidden={!isTrainer}
         />
+        
+        {/* Settings - visible to employers only */}
         <SidebarItem 
           icon={<Settings />} 
           label="Instellingen" 
           to="/settings" 
           active={isActive("/settings")} 
-          hidden={userRole === "trainer" || userRole === "employee"}
+          hidden={!isEmployer}
         />
       </div>
 

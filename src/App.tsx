@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route path="/login" element={<Login />} />
             
-            {/* Protected routes */}
+            {/* Protected routes for both employees and employers */}
             <Route path="/dashboard" element={
               <ProtectedRoute allowedRoles={["employee", "employer"]}>
                 <Dashboard />
@@ -48,6 +48,13 @@ const App = () => (
               </ProtectedRoute>
             } />
             
+            <Route path="/emergency-call" element={
+              <ProtectedRoute allowedRoles={["employee", "employer"]}>
+                <EmergencyCall />
+              </ProtectedRoute>
+            } />
+            
+            {/* Protected routes for employers only */}
             <Route path="/certificates" element={
               <ProtectedRoute allowedRoles={["employer"]}>
                 <Certificates />
@@ -78,12 +85,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             
-            <Route path="/emergency-call" element={
-              <ProtectedRoute allowedRoles={["employee", "employer"]}>
-                <EmergencyCall />
-              </ProtectedRoute>
-            } />
-            
+            {/* Protected routes for trainers only */}
             <Route path="/partner-portal" element={
               <ProtectedRoute allowedRoles={["trainer"]}>
                 <PartnerPortal />
