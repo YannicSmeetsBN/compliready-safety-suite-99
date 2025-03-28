@@ -215,7 +215,7 @@ const Dashboard = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="lg:col-span-2">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle>Certificaten Status</CardTitle>
@@ -231,7 +231,6 @@ const Dashboard = () => {
                           outerRadius={80}
                           paddingAngle={2}
                           dataKey="value"
-                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           labelLine={false}
                         >
                           {certificateStatusData.map((entry, index) => (
@@ -248,7 +247,6 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
-                        <p>Bijna verlopen</p>
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
@@ -273,7 +271,6 @@ const Dashboard = () => {
                           outerRadius={80}
                           paddingAngle={2}
                           dataKey="value"
-                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           labelLine={false}
                         >
                           {equipmentStatusData.map((entry, index) => (
@@ -290,7 +287,6 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
-                        <p>Bijna verlopen</p>
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
@@ -300,9 +296,9 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
                 
-                <Card>
+                <Card className="md:col-span-2">
                   <CardHeader className="pb-2">
-                    <CardTitle>Incidenten Over Tijd</CardTitle>
+                    <CardTitle>Incidenten</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="h-56">
