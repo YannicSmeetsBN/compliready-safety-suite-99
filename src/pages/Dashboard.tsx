@@ -343,6 +343,29 @@ const Dashboard = () => {
             </div>
           </div>
           
+          {/* Recente signaleringen moved between circle diagrams and statistics section */}
+          <h2 className="page-subtitle mb-4">Recente signaleringen</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <NotificationCard
+              title="Certificaten"
+              icon={<FileText size={20} />}
+              notifications={certificateNotifications}
+              viewAllLink="/certificates"
+            />
+            <NotificationCard
+              title="Veiligheidsmiddelen & PBM's"
+              icon={<Shield size={20} />}
+              notifications={safetyNotifications}
+              viewAllLink="/safety?tab=pbm"
+            />
+            <NotificationCard
+              title="Geplande oefeningen"
+              icon={<Calendar size={20} />}
+              notifications={exerciseNotifications}
+              viewAllLink="/safety?tab=exercises"
+            />
+          </div>
+          
           <h2 className="page-subtitle">Statistieken</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatCard
@@ -374,29 +397,6 @@ const Dashboard = () => {
               icon={<Bell size={24} />}
               color="orange"
               onClick={() => navigate("/safety?tab=incidents")}
-            />
-          </div>
-          
-          {/* Moved the signaleringen section below the circle diagrams */}
-          <h2 className="page-subtitle">Recente signaleringen</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <NotificationCard
-              title="Certificaten"
-              icon={<FileText size={20} />}
-              notifications={certificateNotifications}
-              viewAllLink="/certificates"
-            />
-            <NotificationCard
-              title="Veiligheidsmiddelen & PBM's"
-              icon={<Shield size={20} />}
-              notifications={safetyNotifications}
-              viewAllLink="/safety?tab=pbm"
-            />
-            <NotificationCard
-              title="Geplande oefeningen"
-              icon={<Calendar size={20} />}
-              notifications={exerciseNotifications}
-              viewAllLink="/safety?tab=exercises"
             />
           </div>
         </main>
