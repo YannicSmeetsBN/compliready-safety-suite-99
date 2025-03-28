@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -247,6 +248,7 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                        <p>Bijna verlopen</p>
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
@@ -287,6 +289,7 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                        <p>Bijna verlopen</p>
                       </div>
                       <div>
                         <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
@@ -300,19 +303,17 @@ const Dashboard = () => {
                   <CardHeader className="pb-2">
                     <CardTitle>Incidenten</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="h-56">
-                      <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RechartsBarChart data={incidentsOverTimeData}>
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
-                          </RechartsBarChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </div>
+                  <CardContent className="h-60">
+                    <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <RechartsBarChart data={incidentsOverTimeData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <Tooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
+                        </RechartsBarChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
               </div>
