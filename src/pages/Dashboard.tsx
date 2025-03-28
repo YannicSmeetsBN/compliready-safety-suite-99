@@ -122,6 +122,24 @@ const Dashboard = () => {
     },
   ];
 
+  const incidentNotifications = [
+    {
+      title: "Val van hoogte - Bouwplaats A",
+      date: "Gemeld op 05-07-2023",
+      status: "danger" as const,
+    },
+    {
+      title: "Bijna-ongeval - Magazijn",
+      date: "Gemeld op 12-07-2023",
+      status: "warning" as const,
+    },
+    {
+      title: "Kleine snijwond - Werkplaats",
+      date: "Gemeld op 20-07-2023",
+      status: "info" as const,
+    },
+  ];
+
   const criticalRisks = [
     { risk: "Ontbrekende blusmiddelen bij magazijn", severity: "high" },
     { risk: "Verlopen BHV-certificaten (3)", severity: "high" },
@@ -293,12 +311,20 @@ const Dashboard = () => {
                   />
                 </div>
 
-                <NotificationCard
-                  title="Geplande oefeningen"
-                  icon={<Calendar size={20} />}
-                  notifications={exerciseNotifications}
-                  viewAllLink="/safety?tab=exercises"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <NotificationCard
+                    title="Geplande oefeningen"
+                    icon={<Calendar size={20} />}
+                    notifications={exerciseNotifications}
+                    viewAllLink="/safety?tab=exercises"
+                  />
+                  <NotificationCard
+                    title="Recente incidenten"
+                    icon={<Bell size={20} />}
+                    notifications={incidentNotifications}
+                    viewAllLink="/safety?tab=incidents"
+                  />
+                </div>
               </div>
             </div>
 
