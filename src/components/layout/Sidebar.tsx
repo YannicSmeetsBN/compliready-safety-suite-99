@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -8,7 +9,8 @@ import {
   Settings,
   Bell,
   AlertTriangle,
-  Phone
+  Phone,
+  Building
 } from "lucide-react";
 
 type SidebarItemProps = {
@@ -96,6 +98,12 @@ export const Sidebar = () => {
           label="Rapportages" 
           to="/reports" 
           active={isActive("/reports")} 
+        />
+        <SidebarItem 
+          icon={<Building />} 
+          label="Partnerportaal" 
+          to="/partner-portal" 
+          active={isActive("/partner-portal")} 
         />
         <SidebarItem 
           icon={<Settings />} 

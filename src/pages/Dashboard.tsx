@@ -4,7 +4,59 @@ import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { NotificationCard } from "@/components/dashboard/NotificationCard";
-import { FileText, Users, Bell, Calendar, BarChart, Shield, AlertTriangle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { 
+  FileText, 
+  Users, 
+  Bell, 
+  Calendar, 
+  BarChart, 
+  Shield, 
+  AlertTriangle,
+  ChevronRight
+} from "lucide-react";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@/components/ui/chart";
+import {
+  Bar,
+  BarChart as RechartsBarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  LineChart,
+  Line
+} from "recharts";
+
+// Demo data for occupancy chart
+const occupancyData = [
+  { month: 'Jan', bezetting: 75 },
+  { month: 'Feb', bezetting: 82 },
+  { month: 'Mar', bezetting: 80 },
+  { month: 'Apr', bezetting: 84 },
+  { month: 'Mei', bezetting: 77 },
+  { month: 'Jun', bezetting: 88 },
+  { month: 'Jul', bezetting: 82 },
+  { month: 'Aug', bezetting: 74 },
+  { month: 'Sep', bezetting: 78 },
+  { month: 'Okt', bezetting: 85 },
+  { month: 'Nov', bezetting: 90 },
+  { month: 'Dec', bezetting: 92 },
+];
+
+// Demo data for certificate types
+const certificateTypeData = [
+  { name: 'BHV', aantal: 18 },
+  { name: 'VCA', aantal: 12 },
+  { name: 'EHBO', aantal: 8 },
+  { name: 'Heftruckcertificaat', aantal: 6 },
+  { name: 'ISO/NEN', aantal: 3 },
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -66,6 +118,22 @@ const Dashboard = () => {
     },
   ];
 
+  // Criticale risico's
+  const criticalRisks = [
+    { risk: "Ontbrekende blusmiddelen bij magazijn", severity: "high" },
+    { risk: "Verlopen BHV-certificaten (3)", severity: "high" },
+    { risk: "Geen RI&E voor nieuwe productielijn", severity: "medium" },
+    { risk: "Verlichting nooduitgang defect", severity: "medium" },
+  ];
+
+  // Actiepunten
+  const actionItems = [
+    { action: "BHV oefening inplannen", deadline: "20-08-2023", status: "open" },
+    { action: "AED training organiseren", deadline: "15-09-2023", status: "open" },
+    { action: "RI&E actualiseren", deadline: "30-09-2023", status: "open" },
+    { action: "Vluchtwegmarkering controle", deadline: "10-08-2023", status: "open" },
+  ];
+
   // Status bepalen voor kleurcodering van de tegels
   const getStatusColor = (warningCount: number, dangerCount: number) => {
     if (dangerCount > 0) return "red";
@@ -91,7 +159,131 @@ const Dashboard = () => {
         <main className="main-content">
           <h1 className="page-title">Dashboard</h1>
           
+          {/* Nieuwe layout met Grafiek en Risico-overzicht */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Bezettingsgraad Medewerkers</CardTitle>
+                </CardHeader>
+                <CardContent className="h-80">
+                  <ChartContainer config={{ bezetting: { label: "Bezetting", color: "#8099BF" } }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={occupancyData}>
+                        <XAxis dataKey="month" />
+                        <YAxis domain={[0, 100]} />
+                        <Tooltip content={<ChartTooltipContent />} />
+                        <Legend />
+                        <Line
+                          type="monotone"
+                          dataKey="bezetting"
+                          stroke="var(--color-bezetting, #8099BF)"
+                          strokeWidth={2}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-1">
+              <div className="space-y-6">
+                {/* Overall Score */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Overall Score</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center rounded-full bg-orange-100 p-6 mb-2">
+                        <span className="text-4xl font-bold text-orange-600">78%</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Uw veiligheidsscore</p>
+                      <div className="mt-4">
+                        <Progress value={78} className="h-2" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Kritieke Risico's */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Kritieke Risico's</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {criticalRisks.map((risk, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <div className={`mt-1 h-2 w-2 rounded-full ${
+                            risk.severity === "high" ? "bg-red-500" : "bg-orange-500"
+                          }`} />
+                          <span className="text-sm">{risk.risk}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Actiepunten */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Actiepunten</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {actionItems.map((item, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{item.action}</p>
+                            <p className="text-xs text-muted-foreground">Deadline: {item.deadline}</p>
+                          </div>
+                          <ChevronRight size={16} className="text-muted-foreground" />
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          {/* Certificaattypes Grafiek */}
+          <div className="mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Certificaten per Type</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ChartContainer config={
+                    { aantal: { label: "Aantal certificaten", color: "#F9B47C" } }
+                  }>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsBarChart data={certificateTypeData}>
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip content={<ChartTooltipContent />} />
+                        <Legend />
+                        <Bar 
+                          dataKey="aantal" 
+                          fill="var(--color-aantal, #F9B47C)" 
+                          radius={[4, 4, 0, 0]}
+                        />
+                      </RechartsBarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
           {/* Statistieken */}
+          <h2 className="page-subtitle">Statistieken</h2>
           <div className="dashboard-grid mb-8">
             <StatCard
               title="Actieve certificaten"
