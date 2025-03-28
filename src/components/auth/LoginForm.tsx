@@ -35,31 +35,43 @@ export const LoginForm = () => {
       
       // Check credentials based on the selected role
       if (selectedRole === "employee" && email === "employee@compliready.nl" && password === "employee") {
+        // Set auth data
         localStorage.setItem("userRole", "employee");
         localStorage.setItem("userName", "Jan Jansen");
         localStorage.setItem("userLocation", "Hoofdkantoor");
+        
         toast({
           title: "Ingelogd als medewerker!",
           description: "U bent succesvol ingelogd als medewerker.",
         });
+        
+        // Explicitly navigate to dashboard
         navigate("/dashboard");
       } else if (selectedRole === "trainer" && email === "trainer@compliready.nl" && password === "trainer") {
+        // Set auth data
         localStorage.setItem("userRole", "trainer");
         localStorage.setItem("userName", "Piet Opleider");
         localStorage.setItem("userLocation", "Opleidingscentrum");
+        
         toast({
           title: "Ingelogd als opleider!",
           description: "U bent succesvol ingelogd als opleider.",
         });
+        
+        // Explicitly navigate to partner portal
         navigate("/partner-portal");
       } else if (selectedRole === "employer" && email === "admin@compliready.nl" && password === "admin") {
+        // Set auth data
         localStorage.setItem("userRole", "employer");
         localStorage.setItem("userName", "Admin");
         localStorage.setItem("userLocation", "Hoofdkantoor");
+        
         toast({
           title: "Ingelogd als werkgever!",
           description: "U bent succesvol ingelogd als werkgever.",
         });
+        
+        // Explicitly navigate to dashboard
         navigate("/dashboard");
       } else {
         toast({

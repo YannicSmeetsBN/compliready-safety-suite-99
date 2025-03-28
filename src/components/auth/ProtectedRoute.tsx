@@ -14,6 +14,15 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
   const location = useLocation();
   const { toast } = useToast();
 
+  // Debug log
+  console.log("ProtectedRoute:", { 
+    isAuthenticated, 
+    userRole, 
+    allowedRoles, 
+    hasAccess: checkAccess(allowedRoles),
+    path: location.pathname
+  });
+
   useEffect(() => {
     if (isAuthenticated && !checkAccess(allowedRoles)) {
       toast({
@@ -24,22 +33,23 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
     }
   }, [location.pathname, isAuthenticated, userRole, toast, allowedRoles, checkAccess]);
 
-  // Not authenticated at all
+  // Not authenticated at all - redirect to login
   if (!isAuthenticated) {
+    console.log("User not authenticated, redirecting to role selection");
     return <Navigate to="/role-selection" />;
   }
 
   // Authenticated but not authorized for this route
   if (!checkAccess(allowedRoles)) {
+    console.log("User not authorized for this route, redirecting based on role");
     // Redirect to an appropriate page based on role
     if (userRole === "trainer") {
       return <Navigate to="/partner-portal" />;
-    } else if (userRole === "employee") {
-      return <Navigate to="/dashboard" />;
     } else {
       return <Navigate to="/dashboard" />;
     }
   }
 
+  // User is authenticated and authorized
   return <>{children}</>;
 };

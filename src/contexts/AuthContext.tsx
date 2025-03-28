@@ -20,8 +20,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  // Load authentication state from localStorage on mount
   useEffect(() => {
-    // Check if the user is logged in
     const role = localStorage.getItem("userRole");
     const name = localStorage.getItem("userName");
     const location = localStorage.getItem("userLocation");
@@ -31,10 +31,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUserName(name);
       setUserLocation(location);
       setIsAuthenticated(true);
+      
+      // If on index or role-selection, redirect to appropriate landing page
+      const path = window.location.pathname;
+      if (path === "/" || path === "/role-selection" || path === "/login") {
+        if (role === "trainer") {
+          navigate("/partner-portal");
+        } else {
+          navigate("/dashboard");
+        }
+      }
     } else {
       setIsAuthenticated(false);
     }
-  }, []);
+  }, [navigate]);
 
   const logout = () => {
     localStorage.removeItem("userRole");
