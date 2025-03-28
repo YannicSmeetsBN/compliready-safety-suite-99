@@ -66,11 +66,11 @@ export default {
                 // CompliReady kleuren
                 compliblue: {
                     DEFAULT: '#15427D',
-                    light: '#8099BF',
+                    light: '#8099BF',  // Updated pastel blue
                 },
                 compliorange: {
                     DEFAULT: '#FF7200',
-                    light: '#F9B47C',
+                    light: '#F9B47C',  // Updated pastel orange
                 },
 			},
 			borderRadius: {

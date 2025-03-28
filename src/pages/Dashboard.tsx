@@ -1,11 +1,14 @@
 
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { NotificationCard } from "@/components/dashboard/NotificationCard";
-import { FileText, Users, Bell, Calendar, BarChart } from "lucide-react";
+import { FileText, Users, Bell, Calendar, BarChart, Shield } from "lucide-react";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   // Demo certificaat notificaties
   const certificateNotifications = [
     {
@@ -63,6 +66,23 @@ const Dashboard = () => {
     },
   ];
 
+  // Status bepalen voor kleurcodering van de tegels
+  const getStatusColor = (warningCount: number, dangerCount: number) => {
+    if (dangerCount > 0) return "red";
+    if (warningCount > 0) return "orange";
+    return "green";
+  };
+
+  // Telling van waarschuwingen en kritieke items
+  const certificateWarnings = 2;
+  const certificateDangers = 1;
+  const safetyWarnings = 1;
+  const safetyDangers = 1;
+  const incidentWarnings = 2;
+  const incidentDangers = 1;
+  const exerciseWarnings = 2;
+  const exerciseDangers = 0;
+
   return (
     <div className="main-layout">
       <Sidebar />
@@ -78,39 +98,45 @@ const Dashboard = () => {
               value={42}
               icon={<FileText size={24} />}
               trend={{ value: "8%", increase: true }}
-              color="blue"
+              color={getStatusColor(certificateWarnings, certificateDangers)}
+              onClick={() => navigate("/certificates")}
             />
             <StatCard
               title="Medewerkers"
               value={18}
               icon={<Users size={24} />}
-              color="orange"
+              color="blue"
+              onClick={() => navigate("/employees")}
             />
             <StatCard
               title="Openstaande incidenten"
               value={3}
               icon={<Bell size={24} />}
               trend={{ value: "25%", increase: false }}
-              color="red"
+              color={getStatusColor(incidentWarnings, incidentDangers)}
+              onClick={() => navigate("/safety?tab=incidents")}
             />
             <StatCard
               title="Geplande oefeningen"
               value={2}
               icon={<Calendar size={24} />}
-              color="green"
+              color={getStatusColor(exerciseWarnings, exerciseDangers)}
+              onClick={() => navigate("/safety?tab=exercises")}
             />
             <StatCard
-              title="Vervallen certificaten"
-              value={5}
-              icon={<FileText size={24} />}
-              trend={{ value: "12%", increase: true }}
-              color="red"
+              title="PBM's & Veiligheidsmiddelen"
+              value={25}
+              icon={<Shield size={24} />}
+              trend={{ value: "5%", increase: true }}
+              color={getStatusColor(safetyWarnings, safetyDangers)}
+              onClick={() => navigate("/safety?tab=pbm")}
             />
             <StatCard
               title="Rapportages"
               value={12}
               icon={<BarChart size={24} />}
               color="purple"
+              onClick={() => navigate("/reports")}
             />
           </div>
           
@@ -127,13 +153,13 @@ const Dashboard = () => {
               title="Veiligheidsmiddelen & PBM's"
               icon={<Bell size={20} />}
               notifications={safetyNotifications}
-              viewAllLink="/safety"
+              viewAllLink="/safety?tab=pbm"
             />
             <NotificationCard
               title="Geplande oefeningen"
               icon={<Calendar size={20} />}
               notifications={exerciseNotifications}
-              viewAllLink="/exercises"
+              viewAllLink="/safety?tab=exercises"
             />
           </div>
         </main>

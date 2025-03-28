@@ -10,9 +10,10 @@ type StatCardProps = {
     increase: boolean;
   };
   color?: "blue" | "orange" | "green" | "red" | "purple";
+  onClick?: () => void;
 };
 
-export const StatCard = ({ title, value, icon, trend, color = "blue" }: StatCardProps) => {
+export const StatCard = ({ title, value, icon, trend, color = "blue", onClick }: StatCardProps) => {
   const colors = {
     blue: "text-compliblue bg-compliblue/10",
     orange: "text-compliorange bg-compliorange/10",
@@ -22,7 +23,10 @@ export const StatCard = ({ title, value, icon, trend, color = "blue" }: StatCard
   };
 
   return (
-    <div className="dashboard-card dashboard-stat-card">
+    <div 
+      className={`dashboard-card dashboard-stat-card ${onClick ? 'cursor-pointer hover:shadow-lg transition-all' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex justify-between items-start">
         <div>
           <h3 className="card-header">{title}</h3>
