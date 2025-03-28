@@ -12,6 +12,8 @@ import SafetyManagement from "./pages/SafetyManagement";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
+import RiskAssessment from "./pages/RiskAssessment";
+import EmergencyCall from "./pages/EmergencyCall";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/safety" element={<SafetyManagement />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/risk-assessment" element={<RiskAssessment />} />
+          <Route path="/emergency-call" element={<EmergencyCall />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { NotificationCard } from "@/components/dashboard/NotificationCard";
-import { FileText, Users, Bell, Calendar, BarChart, Shield } from "lucide-react";
+import { FileText, Users, Bell, Calendar, BarChart, Shield, AlertTriangle } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -130,6 +130,13 @@ const Dashboard = () => {
               trend={{ value: "5%", increase: true }}
               color={getStatusColor(safetyWarnings, safetyDangers)}
               onClick={() => navigate("/safety?tab=pbm")}
+            />
+            <StatCard
+              title="RI&E Analyses"
+              value={1}
+              icon={<AlertTriangle size={24} />}
+              color="purple"
+              onClick={() => navigate("/risk-assessment")}
             />
             <StatCard
               title="Rapportages"

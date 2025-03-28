@@ -8,7 +8,9 @@ import {
   BarChart, 
   Settings,
   Search,
-  Bell
+  Bell,
+  AlertTriangle,
+  Phone
 } from "lucide-react";
 
 type SidebarItemProps = {
@@ -48,7 +50,7 @@ export const Sidebar = () => {
     >
       <div className="p-4 flex justify-center mb-6">
         <img 
-          src="/lovable-uploads/15826a76-cfbc-4fe6-8dc7-444e40b68e3e.png" 
+          src="/lovable-uploads/3f76d639-79b2-4b59-a4c7-ab9802b94a18.png" 
           alt="CompliReady Logo" 
           className={`${collapsed ? "w-12" : "w-36"} transition-all duration-300`}
         />
@@ -78,6 +80,18 @@ export const Sidebar = () => {
           label="Veiligheidsbeheer" 
           to="/safety" 
           active={isActive("/safety")} 
+        />
+        <SidebarItem 
+          icon={<AlertTriangle />} 
+          label="RI&E Generator" 
+          to="/risk-assessment" 
+          active={isActive("/risk-assessment")} 
+        />
+        <SidebarItem 
+          icon={<Phone />} 
+          label="BHV-Oproep" 
+          to="/emergency-call" 
+          active={isActive("/emergency-call")} 
         />
         <SidebarItem 
           icon={<BarChart />} 
