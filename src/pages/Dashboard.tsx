@@ -346,7 +346,7 @@ const Dashboard = () => {
                       {criticalRisks.map((risk, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <div className={`mt-1 h-2 w-2 rounded-full ${
-                            risk.severity === "high" ? "bg-red-500" : "bg-orange-500"
+                            risk.severity === "high" ? "bg-red-500" : "bg-red-400"
                           }`} />
                           <span className="text-sm">{risk.risk}</span>
                         </li>
@@ -363,7 +363,7 @@ const Dashboard = () => {
                     <ul className="space-y-2">
                       {actionItems.map((item, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
+                          <div className="mt-1 h-2 w-2 rounded-full bg-orange-500" />
                           <div className="flex-1">
                             <p className="text-sm font-medium">{item.action}</p>
                             <p className="text-xs text-muted-foreground">Deadline: {item.deadline}</p>

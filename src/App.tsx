@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import RiskAssessment from "./pages/RiskAssessment";
 import EmergencyCall from "./pages/EmergencyCall";
 import PartnerPortal from "./pages/PartnerPortal";
+import ClientDetail from "./pages/ClientDetail";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/risk-assessment" element={<RiskAssessment />} />
           <Route path="/emergency-call" element={<EmergencyCall />} />
           <Route path="/partner-portal" element={<PartnerPortal />} />
+          <Route path="/partner-portal/client/:clientId" element={<ClientDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

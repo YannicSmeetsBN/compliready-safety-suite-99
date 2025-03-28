@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -175,8 +176,8 @@ const expiringCertificatesData = [
 ];
 
 const PartnerPortal = () => {
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("clients");
-  const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter clients based on search query
@@ -186,14 +187,8 @@ const PartnerPortal = () => {
 
   // Handle client selection
   const handleClientSelect = (clientId: number) => {
-    setSelectedClient(clientId);
-    setSelectedTab("employees");
+    navigate(`/partner-portal/client/${clientId}`);
   };
-
-  // Get filtered employees for selected client
-  const clientEmployees = selectedClient 
-    ? employeesData.filter(employee => employee.id % 5 === selectedClient % 5) // Just for demo
-    : [];
 
   return (
     <div className="main-layout">
@@ -212,9 +207,7 @@ const PartnerPortal = () => {
           <Tabs value={selectedTab} onValueChange={setSelectedTab}>
             <TabsList className="mb-6">
               <TabsTrigger value="clients">Klantoverzicht</TabsTrigger>
-              <TabsTrigger value="employees">Medewerkers per klant</TabsTrigger>
               <TabsTrigger value="trainings">Trainingsplanning</TabsTrigger>
-              <TabsTrigger value="certificates">Verlopen certificaten</TabsTrigger>
               <TabsTrigger value="contracts">Contractbeheer</TabsTrigger>
             </TabsList>
 
@@ -390,99 +383,6 @@ const PartnerPortal = () => {
               </div>
             </TabsContent>
 
-            {/* Medewerkers per klant */}
-            <TabsContent value="employees">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>
-                        {selectedClient ? clientsData.find(c => c.id === selectedClient)?.name : "Medewerkers"}
-                      </CardTitle>
-                      <CardDescription>
-                        {selectedClient ? "Medewerkers en certificaten" : "Selecteer een klant om medewerkers te bekijken"}
-                      </CardDescription>
-                    </div>
-                    {selectedClient && (
-                      <div className="flex items-center gap-3">
-                        <Button variant="outline" size="sm">
-                          <Upload className="mr-2 h-4 w-4" />
-                          Certificaten uploaden
-                        </Button>
-                        <Button size="sm">
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          Medewerker toevoegen
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {selectedClient ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Naam</TableHead>
-                          <TableHead>Functie</TableHead>
-                          <TableHead>Certificaten</TableHead>
-                          <TableHead>Bijna verlopen</TableHead>
-                          <TableHead>Verlopen</TableHead>
-                          <TableHead>Laatste training</TableHead>
-                          <TableHead className="text-right">Acties</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {clientEmployees.map((employee) => (
-                          <TableRow key={employee.id}>
-                            <TableCell className="font-medium">{employee.name}</TableCell>
-                            <TableCell>{employee.function}</TableCell>
-                            <TableCell>{employee.certificates}</TableCell>
-                            <TableCell>
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                {employee.expiringCertificates}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              {employee.expired > 0 ? (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                  {employee.expired}
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  0
-                                </span>
-                              )}
-                            </TableCell>
-                            <TableCell>{employee.lastTraining}</TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="outline" size="sm">
-                                <FileText className="mr-2 h-4 w-4" />
-                                Certificaten
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  ) : (
-                    <div className="text-center py-10 text-muted-foreground">
-                      <div className="mx-auto mb-4 bg-muted w-16 h-16 rounded-full flex items-center justify-center">
-                        <Users size={24} className="text-muted-foreground" />
-                      </div>
-                      <p>Selecteer een klant om medewerkers te bekijken</p>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setSelectedTab("clients")} 
-                        className="mt-4"
-                      >
-                        Ga naar klantenoverzicht
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
             {/* Trainingsplanning */}
             <TabsContent value="trainings">
               <Card>
@@ -614,81 +514,6 @@ const PartnerPortal = () => {
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
-
-            {/* Verlopen certificaten */}
-            <TabsContent value="certificates">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>Verlopen certificaten</CardTitle>
-                      <CardDescription>Overzicht van bijna verlopen en verlopen certificaten</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="search"
-                          placeholder="Zoek certificaten..."
-                          className="pl-8 w-64"
-                        />
-                      </div>
-                      <Button variant="outline" size="sm">
-                        <Upload className="mr-2 h-4 w-4" />
-                        Certificaat uploaden
-                      </Button>
-                      <Button size="sm">
-                        <Download className="mr-2 h-4 w-4" />
-                        Exporteren
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Medewerker</TableHead>
-                        <TableHead>Bedrijf</TableHead>
-                        <TableHead>Certificaattype</TableHead>
-                        <TableHead>Vervaldatum</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Acties</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {expiringCertificatesData.map((certificate) => (
-                        <TableRow key={certificate.id}>
-                          <TableCell className="font-medium">{certificate.employeeName}</TableCell>
-                          <TableCell>{certificate.company}</TableCell>
-                          <TableCell>{certificate.certificateType}</TableCell>
-                          <TableCell>{certificate.expireDate}</TableCell>
-                          <TableCell>
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              certificate.status.includes("Verlopen") 
-                                ? "bg-red-100 text-red-800" 
-                                : "bg-orange-100 text-orange-800"
-                            }`}>
-                              {certificate.status}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right space-x-2">
-                            <Button variant="outline" size="sm">
-                              <Calendar className="mr-2 h-4 w-4" />
-                              Training plannen
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Upload className="mr-2 h-4 w-4" />
-                              Certificaat vervangen
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
             </TabsContent>
 
             {/* Contractbeheer */}
