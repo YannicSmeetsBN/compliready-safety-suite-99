@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Users, Bell, Calendar, Download, FilePdf, FileSpreadsheet, BarChart, PieChart, Filter } from "lucide-react";
+import { FileText, Users, Bell, Calendar, Download, FileSpreadsheet, BarChart, PieChart, Filter, FileIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -165,7 +165,7 @@ const Reports = () => {
                       <PopoverContent className="w-56" align="end">
                         <div className="space-y-2">
                           <Button variant="ghost" className="w-full justify-start">
-                            <FilePdf className="mr-2" size={16} />
+                            <FileIcon className="mr-2" size={16} />
                             Exporteren als PDF
                           </Button>
                           <Button variant="ghost" className="w-full justify-start">
