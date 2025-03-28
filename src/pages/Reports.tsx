@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -180,6 +179,23 @@ const Reports = () => {
               </Card>
             ))}
           </div>
+          
+          {filteredReports.map((report) => (
+            <div key={report.id}>
+              <div className="popover-content w-56" align="end">
+                <div className="space-y-2">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <FileIcon className="mr-2" size={16} />
+                    Exporteren als PDF
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <FileSpreadsheet className="mr-2" size={16} />
+                    Exporteren als Excel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
         </main>
       </div>
     </div>
