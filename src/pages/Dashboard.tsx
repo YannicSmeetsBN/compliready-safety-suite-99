@@ -215,31 +215,111 @@ const Dashboard = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Bezettingsgraad Medewerkers</CardTitle>
-                </CardHeader>
-                <CardContent className="h-80">
-                  <ChartContainer config={{ bezetting: { label: "Bezetting", color: "#8099BF" } }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={occupancyData}>
-                        <XAxis dataKey="month" />
-                        <YAxis domain={[0, 100]} />
-                        <Tooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey="bezetting"
-                          stroke="var(--color-bezetting, #8099BF)"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          activeDot={{ r: 6 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Certificaten Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-56 flex justify-center">
+                      <PieChart width={200} height={200}>
+                        <Pie
+                          data={certificateStatusData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={80}
+                          paddingAngle={2}
+                          dataKey="value"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          labelLine={false}
+                        >
+                          {certificateStatusData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value) => [`${value} certificaten`, 'Aantal']} />
+                      </PieChart>
+                    </div>
+                    <div className="flex justify-around text-xs text-center mt-2">
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
+                        <p>Actueel</p>
+                      </div>
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                        <p>Bijna verlopen</p>
+                      </div>
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
+                        <p>Verlopen</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Veiligheidsmiddelen Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-56 flex justify-center">
+                      <PieChart width={200} height={200}>
+                        <Pie
+                          data={equipmentStatusData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={80}
+                          paddingAngle={2}
+                          dataKey="value"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          labelLine={false}
+                        >
+                          {equipmentStatusData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value) => [`${value} middelen`, 'Aantal']} />
+                      </PieChart>
+                    </div>
+                    <div className="flex justify-around text-xs text-center mt-2">
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
+                        <p>Actueel</p>
+                      </div>
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
+                        <p>Bijna verlopen</p>
+                      </div>
+                      <div>
+                        <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
+                        <p>Verlopen</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle>Incidenten Over Tijd</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-56">
+                      <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsBarChart data={incidentsOverTimeData}>
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <Tooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
+                          </RechartsBarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
 
             <div className="lg:col-span-1">
@@ -300,139 +380,6 @@ const Dashboard = () => {
                 </Card>
               </div>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Certificaten Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-56 flex justify-center">
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      data={certificateStatusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {certificateStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value} certificaten`, 'Aantal']} />
-                  </PieChart>
-                </div>
-                <div className="flex justify-around text-xs text-center mt-2">
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
-                    <p>Actueel</p>
-                  </div>
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
-                    <p>Bijna verlopen</p>
-                  </div>
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
-                    <p>Verlopen</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Incidenten Over Tijd</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RechartsBarChart data={incidentsOverTimeData}>
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="aantal" fill="#F9B47C" radius={[4, 4, 0, 0]} />
-                      </RechartsBarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle>Veiligheidsmiddelen Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-56 flex justify-center">
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      data={equipmentStatusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {equipmentStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value} middelen`, 'Aantal']} />
-                  </PieChart>
-                </div>
-                <div className="flex justify-around text-xs text-center mt-2">
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
-                    <p>Actueel</p>
-                  </div>
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
-                    <p>Bijna verlopen</p>
-                  </div>
-                  <div>
-                    <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
-                    <p>Verlopen</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mb-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Certificaten per Type</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ChartContainer config={{ aantal: { label: "Aantal certificaten", color: "#F9B47C" } }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RechartsBarChart data={certificateTypeData}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Bar 
-                          dataKey="aantal" 
-                          fill="var(--color-aantal, #F9B47C)" 
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </RechartsBarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-              </CardContent>
-            </Card>
           </div>
           
           <h2 className="page-subtitle">Statistieken</h2>
