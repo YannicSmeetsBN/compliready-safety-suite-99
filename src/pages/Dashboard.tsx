@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -13,7 +14,8 @@ import {
   BarChart, 
   Shield, 
   AlertTriangle,
-  ChevronRight
+  ChevronRight,
+  Activity
 } from "lucide-react";
 import {
   ChartContainer,
@@ -173,6 +175,13 @@ const Dashboard = () => {
 
   const complianceScore = 78;
 
+  // Function to determine compliance score color
+  const getComplianceScoreColor = (score: number) => {
+    if (score >= 80) return "bg-green-100 text-green-600";
+    if (score >= 60) return "bg-orange-100 text-orange-600";
+    return "bg-red-100 text-red-600";
+  };
+
   return (
     <div className="main-layout">
       <Sidebar />
@@ -243,8 +252,8 @@ const Dashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="inline-flex items-center justify-center rounded-full bg-orange-100 p-6 mb-2">
-                        <span className="text-4xl font-bold text-orange-600">{complianceScore}%</span>
+                      <div className={`inline-flex items-center justify-center rounded-full p-6 mb-2 ${getComplianceScoreColor(complianceScore)}`}>
+                        <span className="text-4xl font-bold">{complianceScore}%</span>
                       </div>
                       <p className="text-sm text-muted-foreground">Uw veiligheidsscore</p>
                       <div className="mt-4">
@@ -346,7 +355,7 @@ const Dashboard = () => {
                 <div className="h-64">
                   <ChartContainer config={{ aantal: { label: "Aantal incidenten", color: "#F9B47C" } }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={incidentsOverTimeData}>
+                      <BarChart>
                         <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip content={<ChartTooltipContent />} />
@@ -429,7 +438,14 @@ const Dashboard = () => {
           </div>
           
           <h2 className="page-subtitle">Statistieken</h2>
-          <div className="dashboard-grid mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <StatCard
+              title="Actieve medewerkers"
+              value={18}
+              icon={<Users size={24} />}
+              color="blue"
+              onClick={() => navigate("/employees")}
+            />
             <StatCard
               title="Actieve certificaten"
               value={42}
@@ -439,29 +455,7 @@ const Dashboard = () => {
               onClick={() => navigate("/certificates")}
             />
             <StatCard
-              title="Medewerkers"
-              value={18}
-              icon={<Users size={24} />}
-              color="blue"
-              onClick={() => navigate("/employees")}
-            />
-            <StatCard
-              title="Openstaande incidenten"
-              value={3}
-              icon={<Bell size={24} />}
-              trend={{ value: "25%", increase: false }}
-              color={getStatusColor(incidentWarnings, incidentDangers)}
-              onClick={() => navigate("/safety?tab=incidents")}
-            />
-            <StatCard
-              title="Geplande oefeningen"
-              value={2}
-              icon={<Calendar size={24} />}
-              color={getStatusColor(exerciseWarnings, exerciseDangers)}
-              onClick={() => navigate("/safety?tab=exercises")}
-            />
-            <StatCard
-              title="PBM's & Veiligheidsmiddelen"
+              title="Veiligheidsmiddelen"
               value={25}
               icon={<Shield size={24} />}
               trend={{ value: "5%", increase: true }}
@@ -469,23 +463,17 @@ const Dashboard = () => {
               onClick={() => navigate("/safety?tab=pbm")}
             />
             <StatCard
-              title="RI&E Analyses"
-              value={1}
-              icon={<AlertTriangle size={24} />}
-              color="purple"
-              onClick={() => navigate("/risk-assessment")}
-            />
-            <StatCard
-              title="Rapportages"
-              value={12}
-              icon={<BarChart size={24} />}
-              color="purple"
-              onClick={() => navigate("/reports")}
+              title="Incidenten (30 dagen)"
+              value={3}
+              icon={<Bell size={24} />}
+              trend={{ value: "25%", increase: false }}
+              color={getStatusColor(incidentWarnings, incidentDangers)}
+              onClick={() => navigate("/safety?tab=incidents")}
             />
           </div>
           
           <h2 className="page-subtitle">Recente signaleringen</h2>
-          <div className="dashboard-grid">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <NotificationCard
               title="Certificaten"
               icon={<FileText size={20} />}
@@ -494,7 +482,7 @@ const Dashboard = () => {
             />
             <NotificationCard
               title="Veiligheidsmiddelen & PBM's"
-              icon={<Bell size={20} />}
+              icon={<Shield size={20} />}
               notifications={safetyNotifications}
               viewAllLink="/safety?tab=pbm"
             />
