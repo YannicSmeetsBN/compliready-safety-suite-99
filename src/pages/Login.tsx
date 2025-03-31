@@ -1,4 +1,3 @@
-
 import { LoginForm } from "@/components/auth/LoginForm";
 
 const Index = () => {
@@ -7,9 +6,9 @@ const Index = () => {
       {/* Linker kant: Welkomstgrafiek */}
       <div className="bg-compliblue md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
         <div className="max-w-md text-white">
-          <div className="bg-white rounded-lg p-4 mb-8 flex justify-center">
+          <div className="bg-compliblue rounded-lg p-4 mb-8 flex justify-center">
             <img 
-              src="/lovable-uploads/b36d3195-cd4b-4ea0-ab55-b03b2988fa84.png" 
+              src="/lovable-uploads/aad942cf-5d2b-4814-bbc7-510d090a7942.png" 
               alt="CompliReady Logo" 
               className="w-64"
             />

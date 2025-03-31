@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,9 +17,9 @@ const RoleSelection = () => {
       {/* Left side: Welcome graphic - same as in Index.tsx */}
       <div className="bg-compliblue md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
         <div className="max-w-md text-white">
-          <div className="bg-white rounded-lg p-4 mb-8 flex justify-center">
+          <div className="bg-compliblue rounded-lg p-4 mb-8 flex justify-center">
             <img 
-              src="/lovable-uploads/15826a76-cfbc-4fe6-8dc7-444e40b68e3e.png" 
+              src="/lovable-uploads/aad942cf-5d2b-4814-bbc7-510d090a7942.png" 
               alt="CompliReady Logo" 
               className="w-64"
             />

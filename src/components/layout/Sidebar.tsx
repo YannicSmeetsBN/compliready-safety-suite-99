@@ -59,9 +59,9 @@ export const Sidebar = () => {
       transition-all duration-300 flex flex-col`}
     >
       <div className="p-4 flex justify-center mb-6">
-        <div className="bg-white rounded-lg p-2 flex justify-center w-full">
+        <div className="bg-sidebar rounded-lg p-2 flex justify-center w-full">
           <img 
-            src="/lovable-uploads/3f76d639-79b2-4b59-a4c7-ab9802b94a18.png" 
+            src="/lovable-uploads/aad942cf-5d2b-4814-bbc7-510d090a7942.png" 
             alt="CompliReady Logo" 
             className={`${collapsed ? "w-12" : "w-36"} transition-all duration-300`}
           />
