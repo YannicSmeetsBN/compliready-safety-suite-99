@@ -68,7 +68,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             
-            <Route path="/safety" element={
+            <Route path="/safety/*" element={
               <ProtectedRoute allowedRoles={["employer"]}>
                 <SafetyManagement />
               </ProtectedRoute>

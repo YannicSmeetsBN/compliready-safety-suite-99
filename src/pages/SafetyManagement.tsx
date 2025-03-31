@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useParams, Routes, Route } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { 
@@ -22,9 +23,12 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import PPEOverview from "@/components/safety/PPEOverview";
+import PPEDetail from "@/components/safety/PPEDetail";
 
 const SafetyManagement = () => {
   const [locationFilter, setLocationFilter] = useState('all');
+  
   // Function to scroll back to top
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,71 +43,19 @@ const SafetyManagement = () => {
           <h1 className="page-title">Veiligheidsbeheer</h1>
           
           <div className="space-y-8 pb-20">
-            {/* PBM's Section */}
+            {/* PBM's Section - Updated to use the component */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <HandMetal className="h-6 w-6 text-compliblue" />
                   <span>Persoonlijke Beschermingsmiddelen (PBM's)</span>
                 </CardTitle>
-                <Button className="bg-compliblue hover:bg-compliblue/90">
-                  Nieuw PBM toevoegen
-                </Button>
               </CardHeader>
               <CardContent>
-                <div className="bg-white rounded-lg shadow border overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Medewerker</TableHead>
-                        <TableHead>Middel</TableHead>
-                        <TableHead>Uitgiftedatum</TableHead>
-                        <TableHead>Controlemoment</TableHead>
-                        <TableHead>Vervaldatum</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actie</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Klaas Klaassen</TableCell>
-                        <TableCell>Veiligheidshelm</TableCell>
-                        <TableCell>01-01-2023</TableCell>
-                        <TableCell>01-07-2023</TableCell>
-                        <TableCell>01-01-2025</TableCell>
-                        <TableCell>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Geldig
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm">Bewerken</Button>
-                            <Button variant="outline" size="sm" className="text-red-500">Verwijderen</Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Jan Janssen</TableCell>
-                        <TableCell>Veiligheidsbril</TableCell>
-                        <TableCell>15-06-2023</TableCell>
-                        <TableCell>15-12-2023</TableCell>
-                        <TableCell>15-06-2024</TableCell>
-                        <TableCell>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Keuring vereist
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm">Bewerken</Button>
-                            <Button variant="outline" size="sm" className="text-red-500">Verwijderen</Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
+                <Routes>
+                  <Route path="/" element={<PPEOverview />} />
+                  <Route path="/ppe/:ppeId" element={<PPEDetail />} />
+                </Routes>
               </CardContent>
             </Card>
 
