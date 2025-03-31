@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Certificates from "./pages/Certificates";
 import Employees from "./pages/Employees";
+import EmployeeDetail from "./pages/EmployeeDetail"; // Nieuwe import
 import SafetyManagement from "./pages/SafetyManagement";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,12 @@ const App = () => (
             <Route path="/employees" element={
               <ProtectedRoute allowedRoles={["employee", "employer"]}>
                 <Employees />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/employees/:employeeId" element={
+              <ProtectedRoute allowedRoles={["employee", "employer"]}>
+                <EmployeeDetail />
               </ProtectedRoute>
             } />
             
