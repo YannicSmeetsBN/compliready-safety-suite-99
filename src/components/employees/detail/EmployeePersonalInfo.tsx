@@ -12,7 +12,7 @@ import {
 interface EmployeePersonalInfoProps {
   employee: any;
   isEditing: boolean;
-  setIsEditing: (state: { personalInfo: boolean }) => void;
+  setIsEditing: (isEditing: boolean) => void;
 }
 
 export const EmployeePersonalInfo = ({ 
@@ -30,7 +30,7 @@ export const EmployeePersonalInfo = ({
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={() => setIsEditing({...isEditing, personalInfo: true})}
+          onClick={() => setIsEditing(true)}
         >
           <Edit className="mr-2" size={16} />
           Bewerken

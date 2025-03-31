@@ -27,14 +27,13 @@ const EmployeeDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [isEditing, setIsEditing] = useState({
-    personalInfo: false,
-    certificates: false,
-    pbm: false,
-    trainings: false,
-    elearnings: false,
-    notes: false
-  });
+  // Update the state to use separate boolean flags for each section
+  const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
+  const [isEditingCertificates, setIsEditingCertificates] = useState(false);
+  const [isEditingPBM, setIsEditingPBM] = useState(false);
+  const [isEditingTrainings, setIsEditingTrainings] = useState(false);
+  const [isEditingElearnings, setIsEditingElearnings] = useState(false);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
 
   // Find the employee based on the ID from the URL
   const employee = employees.find(emp => emp.id === employeeId);
@@ -107,8 +106,8 @@ const EmployeeDetail = () => {
             {/* Persoonlijke gegevens */}
             <EmployeePersonalInfo 
               employee={employee} 
-              isEditing={isEditing} 
-              setIsEditing={setIsEditing} 
+              isEditing={isEditingPersonalInfo}
+              setIsEditing={setIsEditingPersonalInfo}
             />
             
             {/* Certificaten */}
