@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -62,29 +63,29 @@ const RoleSelection = () => {
           
           <div className="space-y-4">
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
               variant="outline"
               onClick={() => handleRoleSelect("employee")}
             >
-              <Users className="mr-2 text-compliblue" />
+              <Users className="mr-2 text-compliblue group-hover:text-white" />
               <span>Inloggen als medewerker</span>
             </Button>
             
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
               variant="outline"
               onClick={() => handleRoleSelect("trainer")}
             >
-              <BookOpen className="mr-2 text-compliblue" />
+              <BookOpen className="mr-2 text-compliblue group-hover:text-white" />
               <span>Inloggen als opleider</span>
             </Button>
             
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
               variant="outline"
               onClick={() => handleRoleSelect("employer")}
             >
-              <Building className="mr-2 text-compliblue" />
+              <Building className="mr-2 text-compliblue group-hover:text-white" />
               <span>Inloggen als werkgever</span>
             </Button>
           </div>
