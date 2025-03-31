@@ -5,7 +5,7 @@ import {
   HandMetal,
   Glasses,
   HardHat,
-  Boot,
+  Footprints,
   Shirt,
   ArrowLeft,
   Plus,
@@ -45,7 +45,7 @@ const ppeTypes = {
   "3": {
     id: "3",
     name: "Veiligheidsschoenen",
-    icon: Boot,
+    icon: Footprints,
     description: "Beschermt de voeten tegen mechanische gevaren, vallende objecten en chemicaliën.",
     checkInterval: "6 maanden",
     expiryPeriod: "1 jaar"

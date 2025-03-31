@@ -13,7 +13,7 @@ import {
   HandMetal, 
   Glasses, 
   HardHat, 
-  Boot, 
+  Footprints, 
   Shirt,
   Plus
 } from "lucide-react";
@@ -39,7 +39,7 @@ const ppeTypes = [
   {
     id: "3",
     name: "Veiligheidsschoenen",
-    icon: Boot,
+    icon: Footprints,
     totalIssued: 24,
     lastCheckDate: "10-04-2023",
     expiringCount: 5,
