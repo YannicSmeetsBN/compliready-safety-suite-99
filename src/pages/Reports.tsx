@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -22,7 +21,8 @@ import {
   ChevronDown,
   CheckCircle2,
   AlertTriangle,
-  XCircle
+  XCircle,
+  MapPin
 } from "lucide-react";
 import {
   Select,
@@ -44,240 +44,11 @@ import { Label } from "@/components/ui/label";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { addDays } from "date-fns";
 
-// Demo report data
-const demoReports = [
-  {
-    id: "1",
-    title: "Certificaten overzicht",
-    description: "Overzicht van alle certificaten en hun status",
-    icon: <FileText className="text-compliblue" size={24} />,
-    updated: "Laatst gegenereerd: 02-07-2023",
-    type: "certificate",
-  },
-  {
-    id: "2",
-    title: "Verlopende certificaten",
-    description: "Certificaten die binnen 60 dagen verlopen",
-    icon: <FileText className="text-amber-500" size={24} />,
-    updated: "Laatst gegenereerd: 01-07-2023",
-    type: "certificate",
-  },
-  {
-    id: "3",
-    title: "Medewerkers met certificaten",
-    description: "Overzicht per medewerker en hun certificaten",
-    icon: <Users className="text-compliblue" size={24} />,
-    updated: "Laatst gegenereerd: 30-06-2023",
-    type: "certificate",
-  },
-  {
-    id: "4",
-    title: "PBM's overzicht",
-    description: "Alle uitgegeven PBM's en hun status",
-    icon: <Bell className="text-compliblue" size={24} />,
-    updated: "Laatst gegenereerd: 28-06-2023",
-    type: "pbm",
-  },
-  {
-    id: "5",
-    title: "Veiligheidsmiddelen status",
-    description: "Status en keuringsdata van alle veiligheidsmiddelen",
-    icon: <Bell className="text-green-500" size={24} />,
-    updated: "Laatst gegenereerd: 25-06-2023",
-    type: "safety",
-  },
-  {
-    id: "6",
-    title: "Incidenten rapport",
-    description: "Overzicht van alle geregistreerde incidenten",
-    icon: <FileText className="text-red-500" size={24} />,
-    updated: "Laatst gegenereerd: 15-06-2023",
-    type: "incident",
-  },
-  {
-    id: "7",
-    title: "Oefeningen planning",
-    description: "Planning en status van alle veiligheidsoefeningen",
-    icon: <Calendar className="text-compliblue" size={24} />,
-    updated: "Laatst gegenereerd: 10-06-2023",
-    type: "exercise",
-  },
-  {
-    id: "8",
-    title: "Audit rapport",
-    description: "Volledig rapport voor externe audits",
-    icon: <BarChart className="text-purple-500" size={24} />,
-    updated: "Laatst gegenereerd: 01-06-2023",
-    type: "audit",
-  },
-  // New reports
-  {
-    id: "9",
-    title: "BHV-dekking per locatie",
-    description: "Overzicht van BHV-bezetting per locatie",
-    icon: <Shield className="text-red-500" size={24} />,
-    updated: "Laatst gegenereerd: 05-07-2023",
-    type: "bhv",
-  },
-  {
-    id: "10",
-    title: "Compliance Scorecard",
-    description: "Compliance scores per onderdeel en locatie",
-    icon: <Award className="text-amber-500" size={24} />,
-    updated: "Laatst gegenereerd: 04-07-2023",
-    type: "compliance",
-  },
-  {
-    id: "11",
-    title: "Opleidingsplanning rapport",
-    description: "Geplande trainingen en inschrijvingen",
-    icon: <BookOpen className="text-compliblue" size={24} />,
-    updated: "Laatst gegenereerd: 03-07-2023",
-    type: "training",
-  }
-];
-
-// Mock data for BHV coverage report
-const bhvCoverageData = [
-  { 
-    locationId: "1", 
-    locationName: "Hoofdkantoor Amsterdam", 
-    bhvAvailable: 3, 
-    bhvRequired: 4, 
-    status: "insufficient", 
-    employees: 175 
-  },
-  { 
-    locationId: "2", 
-    locationName: "Productielocatie Rotterdam", 
-    bhvAvailable: 5, 
-    bhvRequired: 3, 
-    status: "sufficient", 
-    employees: 120 
-  },
-  { 
-    locationId: "3", 
-    locationName: "Magazijn Utrecht", 
-    bhvAvailable: 2, 
-    bhvRequired: 2, 
-    status: "sufficient", 
-    employees: 85 
-  },
-  { 
-    locationId: "4", 
-    locationName: "R&D Centrum Eindhoven", 
-    bhvAvailable: 1, 
-    bhvRequired: 1, 
-    status: "sufficient", 
-    employees: 30 
-  },
-  { 
-    locationId: "5", 
-    locationName: "Distributiecentrum Zwolle", 
-    bhvAvailable: 1, 
-    bhvRequired: 2, 
-    status: "insufficient", 
-    employees: 65 
-  },
-];
-
-// Mock data for compliance scorecard
-const complianceScoreData = [
-  {
-    locationId: "1",
-    locationName: "Hoofdkantoor Amsterdam",
-    certificateScore: 92,
-    pbmScore: 88,
-    trainingScore: 95,
-    elearningScore: 91,
-    totalScore: 91.5
-  },
-  {
-    locationId: "2",
-    locationName: "Productielocatie Rotterdam",
-    certificateScore: 87,
-    pbmScore: 94,
-    trainingScore: 82,
-    elearningScore: 78,
-    totalScore: 85.25
-  },
-  {
-    locationId: "3",
-    locationName: "Magazijn Utrecht",
-    certificateScore: 76,
-    pbmScore: 82,
-    trainingScore: 68,
-    elearningScore: 72,
-    totalScore: 74.5
-  },
-  {
-    locationId: "4",
-    locationName: "R&D Centrum Eindhoven",
-    certificateScore: 98,
-    pbmScore: 91,
-    trainingScore: 100,
-    elearningScore: 97,
-    totalScore: 96.5
-  },
-  {
-    locationId: "5",
-    locationName: "Distributiecentrum Zwolle",
-    certificateScore: 81,
-    pbmScore: 89,
-    trainingScore: 75,
-    elearningScore: 83,
-    totalScore: 82
-  }
-];
-
-// Mock data for training planning
-const trainingPlanningData = [
-  {
-    id: "1",
-    title: "BHV Basis",
-    date: "15-07-2023",
-    location: "Hoofdkantoor Amsterdam",
-    totalSpots: 12,
-    registeredSpots: 8,
-    registeredEmployees: [
-      "Jan Janssen", "Pieter Pietersen", "Maria Willemsen", 
-      "Klaas Klaassen", "Anna Bakker", "Willem de Vries", 
-      "Sophie Smit", "Thomas Visser"
-    ]
-  },
-  {
-    id: "2",
-    title: "VCA Vol",
-    date: "22-07-2023",
-    location: "Productielocatie Rotterdam",
-    totalSpots: 15,
-    registeredSpots: 12,
-    registeredEmployees: [
-      "Erik van Dijk", "Laura Mulder", "Peter Jansen", 
-      "Femke de Groot", "Robert Bakker", "Lisa van der Berg", 
-      "Mark Vos", "Linda de Boer", "David van Leeuwen", 
-      "Esmee Prins", "Michael de Wit", "Sanne Maas"
-    ]
-  },
-  {
-    id: "3",
-    title: "Heftruck certificaat",
-    date: "05-08-2023",
-    location: "Magazijn Utrecht",
-    totalSpots: 8,
-    registeredSpots: 5,
-    registeredEmployees: [
-      "Hans Meijer", "Dirk van Dam", "Johan Vermeulen", 
-      "Bas van der Laan", "Jeroen Smeets"
-    ]
-  }
-];
-
 const Reports = () => {
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: new Date(),
     to: addDays(new Date(), 30),
   });
@@ -534,7 +305,6 @@ const Reports = () => {
     }
   };
 
-  // Helper component for score visualization
   const ScoreIndicator = ({ score, showValue = false }: { score: number, showValue?: boolean }) => {
     let bgColor = "";
     
@@ -550,6 +320,10 @@ const Reports = () => {
         {showValue && <span>{score}%</span>}
       </div>
     );
+  };
+
+  const handleDateRangeChange = (range: DateRange) => {
+    setDateRange(range);
   };
 
   return (
@@ -625,7 +399,10 @@ const Reports = () => {
                   
                   <div className="space-y-2">
                     <Label>Periode</Label>
-                    <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+                    <DatePickerWithRange 
+                      date={dateRange} 
+                      setDate={handleDateRangeChange} 
+                    />
                   </div>
                   
                   <div className="flex justify-end gap-2 pt-2">
