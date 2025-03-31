@@ -4,7 +4,26 @@ import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Users, Bell, Calendar, Download, FileSpreadsheet, BarChart, PieChart, Filter, FileIcon } from "lucide-react";
+import { 
+  FileText, 
+  Users, 
+  Bell, 
+  Calendar, 
+  Download, 
+  FileSpreadsheet, 
+  BarChart, 
+  PieChart, 
+  Filter, 
+  FileIcon, 
+  Shield, 
+  Award,
+  BookOpen,
+  Calendar as CalendarIcon,
+  ChevronDown,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,81 +36,521 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { LocationSelector, getLocations } from "@/components/common/LocationSelector";
+import { Label } from "@/components/ui/label";
+import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { addDays } from "date-fns";
+
+// Demo report data
+const demoReports = [
+  {
+    id: "1",
+    title: "Certificaten overzicht",
+    description: "Overzicht van alle certificaten en hun status",
+    icon: <FileText className="text-compliblue" size={24} />,
+    updated: "Laatst gegenereerd: 02-07-2023",
+    type: "certificate",
+  },
+  {
+    id: "2",
+    title: "Verlopende certificaten",
+    description: "Certificaten die binnen 60 dagen verlopen",
+    icon: <FileText className="text-amber-500" size={24} />,
+    updated: "Laatst gegenereerd: 01-07-2023",
+    type: "certificate",
+  },
+  {
+    id: "3",
+    title: "Medewerkers met certificaten",
+    description: "Overzicht per medewerker en hun certificaten",
+    icon: <Users className="text-compliblue" size={24} />,
+    updated: "Laatst gegenereerd: 30-06-2023",
+    type: "certificate",
+  },
+  {
+    id: "4",
+    title: "PBM's overzicht",
+    description: "Alle uitgegeven PBM's en hun status",
+    icon: <Bell className="text-compliblue" size={24} />,
+    updated: "Laatst gegenereerd: 28-06-2023",
+    type: "pbm",
+  },
+  {
+    id: "5",
+    title: "Veiligheidsmiddelen status",
+    description: "Status en keuringsdata van alle veiligheidsmiddelen",
+    icon: <Bell className="text-green-500" size={24} />,
+    updated: "Laatst gegenereerd: 25-06-2023",
+    type: "safety",
+  },
+  {
+    id: "6",
+    title: "Incidenten rapport",
+    description: "Overzicht van alle geregistreerde incidenten",
+    icon: <FileText className="text-red-500" size={24} />,
+    updated: "Laatst gegenereerd: 15-06-2023",
+    type: "incident",
+  },
+  {
+    id: "7",
+    title: "Oefeningen planning",
+    description: "Planning en status van alle veiligheidsoefeningen",
+    icon: <Calendar className="text-compliblue" size={24} />,
+    updated: "Laatst gegenereerd: 10-06-2023",
+    type: "exercise",
+  },
+  {
+    id: "8",
+    title: "Audit rapport",
+    description: "Volledig rapport voor externe audits",
+    icon: <BarChart className="text-purple-500" size={24} />,
+    updated: "Laatst gegenereerd: 01-06-2023",
+    type: "audit",
+  },
+  // New reports
+  {
+    id: "9",
+    title: "BHV-dekking per locatie",
+    description: "Overzicht van BHV-bezetting per locatie",
+    icon: <Shield className="text-red-500" size={24} />,
+    updated: "Laatst gegenereerd: 05-07-2023",
+    type: "bhv",
+  },
+  {
+    id: "10",
+    title: "Compliance Scorecard",
+    description: "Compliance scores per onderdeel en locatie",
+    icon: <Award className="text-amber-500" size={24} />,
+    updated: "Laatst gegenereerd: 04-07-2023",
+    type: "compliance",
+  },
+  {
+    id: "11",
+    title: "Opleidingsplanning rapport",
+    description: "Geplande trainingen en inschrijvingen",
+    icon: <BookOpen className="text-compliblue" size={24} />,
+    updated: "Laatst gegenereerd: 03-07-2023",
+    type: "training",
+  }
+];
+
+// Mock data for BHV coverage report
+const bhvCoverageData = [
+  { 
+    locationId: "1", 
+    locationName: "Hoofdkantoor Amsterdam", 
+    bhvAvailable: 3, 
+    bhvRequired: 4, 
+    status: "insufficient", 
+    employees: 175 
+  },
+  { 
+    locationId: "2", 
+    locationName: "Productielocatie Rotterdam", 
+    bhvAvailable: 5, 
+    bhvRequired: 3, 
+    status: "sufficient", 
+    employees: 120 
+  },
+  { 
+    locationId: "3", 
+    locationName: "Magazijn Utrecht", 
+    bhvAvailable: 2, 
+    bhvRequired: 2, 
+    status: "sufficient", 
+    employees: 85 
+  },
+  { 
+    locationId: "4", 
+    locationName: "R&D Centrum Eindhoven", 
+    bhvAvailable: 1, 
+    bhvRequired: 1, 
+    status: "sufficient", 
+    employees: 30 
+  },
+  { 
+    locationId: "5", 
+    locationName: "Distributiecentrum Zwolle", 
+    bhvAvailable: 1, 
+    bhvRequired: 2, 
+    status: "insufficient", 
+    employees: 65 
+  },
+];
+
+// Mock data for compliance scorecard
+const complianceScoreData = [
+  {
+    locationId: "1",
+    locationName: "Hoofdkantoor Amsterdam",
+    certificateScore: 92,
+    pbmScore: 88,
+    trainingScore: 95,
+    elearningScore: 91,
+    totalScore: 91.5
+  },
+  {
+    locationId: "2",
+    locationName: "Productielocatie Rotterdam",
+    certificateScore: 87,
+    pbmScore: 94,
+    trainingScore: 82,
+    elearningScore: 78,
+    totalScore: 85.25
+  },
+  {
+    locationId: "3",
+    locationName: "Magazijn Utrecht",
+    certificateScore: 76,
+    pbmScore: 82,
+    trainingScore: 68,
+    elearningScore: 72,
+    totalScore: 74.5
+  },
+  {
+    locationId: "4",
+    locationName: "R&D Centrum Eindhoven",
+    certificateScore: 98,
+    pbmScore: 91,
+    trainingScore: 100,
+    elearningScore: 97,
+    totalScore: 96.5
+  },
+  {
+    locationId: "5",
+    locationName: "Distributiecentrum Zwolle",
+    certificateScore: 81,
+    pbmScore: 89,
+    trainingScore: 75,
+    elearningScore: 83,
+    totalScore: 82
+  }
+];
+
+// Mock data for training planning
+const trainingPlanningData = [
+  {
+    id: "1",
+    title: "BHV Basis",
+    date: "15-07-2023",
+    location: "Hoofdkantoor Amsterdam",
+    totalSpots: 12,
+    registeredSpots: 8,
+    registeredEmployees: [
+      "Jan Janssen", "Pieter Pietersen", "Maria Willemsen", 
+      "Klaas Klaassen", "Anna Bakker", "Willem de Vries", 
+      "Sophie Smit", "Thomas Visser"
+    ]
+  },
+  {
+    id: "2",
+    title: "VCA Vol",
+    date: "22-07-2023",
+    location: "Productielocatie Rotterdam",
+    totalSpots: 15,
+    registeredSpots: 12,
+    registeredEmployees: [
+      "Erik van Dijk", "Laura Mulder", "Peter Jansen", 
+      "Femke de Groot", "Robert Bakker", "Lisa van der Berg", 
+      "Mark Vos", "Linda de Boer", "David van Leeuwen", 
+      "Esmee Prins", "Michael de Wit", "Sanne Maas"
+    ]
+  },
+  {
+    id: "3",
+    title: "Heftruck certificaat",
+    date: "05-08-2023",
+    location: "Magazijn Utrecht",
+    totalSpots: 8,
+    registeredSpots: 5,
+    registeredEmployees: [
+      "Hans Meijer", "Dirk van Dam", "Johan Vermeulen", 
+      "Bas van der Laan", "Jeroen Smeets"
+    ]
+  }
+];
 
 const Reports = () => {
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState({
+    from: new Date(),
+    to: addDays(new Date(), 30),
+  });
+  const [openReportDialog, setOpenReportDialog] = useState<string | null>(null);
   
-  // Demo rapporten
-  const reports = [
-    {
-      id: "1",
-      title: "Certificaten overzicht",
-      description: "Overzicht van alle certificaten en hun status",
-      icon: <FileText className="text-compliblue" size={24} />,
-      updated: "Laatst gegenereerd: 02-07-2023",
-      type: "certificate",
-    },
-    {
-      id: "2",
-      title: "Verlopende certificaten",
-      description: "Certificaten die binnen 60 dagen verlopen",
-      icon: <FileText className="text-amber-500" size={24} />,
-      updated: "Laatst gegenereerd: 01-07-2023",
-      type: "certificate",
-    },
-    {
-      id: "3",
-      title: "Medewerkers met certificaten",
-      description: "Overzicht per medewerker en hun certificaten",
-      icon: <Users className="text-compliblue" size={24} />,
-      updated: "Laatst gegenereerd: 30-06-2023",
-      type: "certificate",
-    },
-    {
-      id: "4",
-      title: "PBM's overzicht",
-      description: "Alle uitgegeven PBM's en hun status",
-      icon: <Bell className="text-compliblue" size={24} />,
-      updated: "Laatst gegenereerd: 28-06-2023",
-      type: "pbm",
-    },
-    {
-      id: "5",
-      title: "Veiligheidsmiddelen status",
-      description: "Status en keuringsdata van alle veiligheidsmiddelen",
-      icon: <Bell className="text-green-500" size={24} />,
-      updated: "Laatst gegenereerd: 25-06-2023",
-      type: "safety",
-    },
-    {
-      id: "6",
-      title: "Incidenten rapport",
-      description: "Overzicht van alle geregistreerde incidenten",
-      icon: <FileText className="text-red-500" size={24} />,
-      updated: "Laatst gegenereerd: 15-06-2023",
-      type: "incident",
-    },
-    {
-      id: "7",
-      title: "Oefeningen planning",
-      description: "Planning en status van alle veiligheidsoefeningen",
-      icon: <Calendar className="text-compliblue" size={24} />,
-      updated: "Laatst gegenereerd: 10-06-2023",
-      type: "exercise",
-    },
-    {
-      id: "8",
-      title: "Audit rapport",
-      description: "Volledig rapport voor externe audits",
-      icon: <BarChart className="text-purple-500" size={24} />,
-      updated: "Laatst gegenereerd: 01-06-2023",
-      type: "audit",
-    },
-  ];
+  const filteredReports = demoReports.filter(report => {
+    if (selectedReportType && report.type !== selectedReportType) return false;
+    return true;
+  });
 
-  const filteredReports = selectedReportType
-    ? reports.filter(report => report.type === selectedReportType)
-    : reports;
+  const renderReportDetail = () => {
+    switch (openReportDialog) {
+      case "bhv-coverage":
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">BHV-dekking per locatie</h3>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exporteren
+                </Button>
+              </div>
+            </div>
+            
+            <div className="rounded-md border">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 border-b">
+                    <th className="text-left p-3">Locatie</th>
+                    <th className="text-center p-3">Medewerkers</th>
+                    <th className="text-center p-3">BHV'ers benodigd</th>
+                    <th className="text-center p-3">BHV'ers beschikbaar</th>
+                    <th className="text-center p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bhvCoverageData.map((location) => (
+                    <tr key={location.locationId} className="border-b">
+                      <td className="p-3">{location.locationName}</td>
+                      <td className="text-center p-3">{location.employees}</td>
+                      <td className="text-center p-3">{location.bhvRequired}</td>
+                      <td className="text-center p-3">{location.bhvAvailable}</td>
+                      <td className="text-center p-3">
+                        {location.status === "sufficient" ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <CheckCircle2 className="mr-1 h-3 w-3" />
+                            Voldoende
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <AlertTriangle className="mr-1 h-3 w-3" />
+                            Onvoldoende
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+              <div className="flex items-start">
+                <AlertTriangle className="text-yellow-600 mr-3 mt-0.5" size={18} />
+                <div>
+                  <h4 className="font-medium text-yellow-800">Let op</h4>
+                  <p className="text-sm text-yellow-700">
+                    Volgens de Arbowet moet iedere werkgever beschikken over voldoende BHV'ers om adequate 
+                    hulpverlening te kunnen bieden. De norm is minimaal 1 BHV'er per 50 medewerkers.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+        
+      case "compliance-scorecard":
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Compliance Scorecard</h3>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exporteren
+                </Button>
+              </div>
+            </div>
+            
+            <div className="rounded-md border">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 border-b">
+                    <th className="text-left p-3">Locatie</th>
+                    <th className="text-center p-3">Certificaten</th>
+                    <th className="text-center p-3">PBM's</th>
+                    <th className="text-center p-3">Trainingen</th>
+                    <th className="text-center p-3">E-learning</th>
+                    <th className="text-center p-3">Totaalscore</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {complianceScoreData.map((location) => (
+                    <tr key={location.locationId} className="border-b">
+                      <td className="p-3">{location.locationName}</td>
+                      <td className="text-center p-3">
+                        <ScoreIndicator score={location.certificateScore} />
+                      </td>
+                      <td className="text-center p-3">
+                        <ScoreIndicator score={location.pbmScore} />
+                      </td>
+                      <td className="text-center p-3">
+                        <ScoreIndicator score={location.trainingScore} />
+                      </td>
+                      <td className="text-center p-3">
+                        <ScoreIndicator score={location.elearningScore} />
+                      </td>
+                      <td className="text-center p-3">
+                        <div className="font-semibold">
+                          <ScoreIndicator score={location.totalScore} showValue />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Legenda</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xs space-y-2">
+                    <div className="flex items-center">
+                      <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                      <span>90-100%: Uitstekend</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-3 h-3 bg-green-300 rounded-full mr-2"></span>
+                      <span>80-89%: Goed</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                      <span>70-79%: Voldoende</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
+                      <span>60-69%: Matig</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-3 h-3 bg-red-600 rounded-full mr-2"></span>
+                      <span>0-59%: Onvoldoende</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="col-span-2">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Toelichting</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-gray-600">
+                    De compliance score geeft aan in hoeverre de organisatie voldoet aan gestelde eisen en 
+                    regelgeving. De score is gebaseerd op verschillende componenten:
+                  </p>
+                  <ul className="text-xs text-gray-600 list-disc pl-5 mt-2 space-y-1">
+                    <li>Certificaten: % medewerkers met geldige en up-to-date certificaten</li>
+                    <li>PBM's: % correct uitgegeven en gekeurde persoonlijke beschermingsmiddelen</li>
+                    <li>Trainingen: % medewerkers die vereiste trainingen hebben gevolgd</li>
+                    <li>E-learning: % voltooide verplichte e-learning modules</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+        
+      case "training-planning":
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Opleidingsplanning rapport</h3>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  Selecteer periode
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exporteren
+                </Button>
+              </div>
+            </div>
+            
+            {trainingPlanningData.map((training) => (
+              <Card key={training.id}>
+                <CardHeader className="pb-3 border-b">
+                  <div className="flex justify-between items-center">
+                    <CardTitle>{training.title}</CardTitle>
+                    <div className="text-sm font-medium text-gray-500 flex items-center">
+                      <CalendarIcon className="h-4 w-4 mr-1" /> {training.date}
+                    </div>
+                  </div>
+                  <CardDescription className="flex items-center gap-4 mt-1">
+                    <span>Locatie: {training.location}</span>
+                    <span className="flex items-center">
+                      <Users className="h-4 w-4 mr-1" />
+                      {training.registeredSpots}/{training.totalSpots} plekken gevuld
+                    </span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Ingeschreven medewerkers:</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {training.registeredEmployees.map((employee, index) => (
+                        <div key={index} className="flex items-center text-sm">
+                          <CheckCircle2 className="h-3 w-3 text-green-500 mr-1" />
+                          {employee}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="bg-gray-50 border-t">
+                  <div className="flex justify-between w-full">
+                    <span className="text-sm text-gray-500">
+                      Nog {training.totalSpots - training.registeredSpots} beschikbare plekken
+                    </span>
+                    <Button size="sm" variant="outline">
+                      Medewerkers toevoegen
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        );
+        
+      default:
+        return null;
+    }
+  };
+
+  // Helper component for score visualization
+  const ScoreIndicator = ({ score, showValue = false }: { score: number, showValue?: boolean }) => {
+    let bgColor = "";
+    
+    if (score >= 90) bgColor = "bg-green-500";
+    else if (score >= 80) bgColor = "bg-green-300";
+    else if (score >= 70) bgColor = "bg-yellow-400";
+    else if (score >= 60) bgColor = "bg-red-400";
+    else bgColor = "bg-red-600";
+    
+    return (
+      <div className="flex items-center justify-center">
+        <span className={`w-3 h-3 ${bgColor} rounded-full mr-2`}></span>
+        {showValue && <span>{score}%</span>}
+      </div>
+    );
+  };
 
   return (
     <div className="main-layout">
@@ -107,25 +566,90 @@ const Reports = () => {
                 <Button variant="outline" className="flex items-center gap-2">
                   <Filter size={16} />
                   <span>Filter rapportages</span>
+                  <ChevronDown size={14} />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="space-y-4">
-                  <h3 className="font-medium">Filter op type</h3>
-                  <Select value={selectedReportType || ""} onValueChange={(value) => setSelectedReportType(value || null)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecteer type rapport" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Alle rapporten</SelectItem>
-                      <SelectItem value="certificate">Certificaten</SelectItem>
-                      <SelectItem value="pbm">PBM's</SelectItem>
-                      <SelectItem value="safety">Veiligheidsmiddelen</SelectItem>
-                      <SelectItem value="incident">Incidenten</SelectItem>
-                      <SelectItem value="exercise">Oefeningen</SelectItem>
-                      <SelectItem value="audit">Audit</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <PopoverContent className="w-96">
+                <div className="space-y-4 p-1">
+                  <div className="space-y-2">
+                    <Label>Type rapport</Label>
+                    <Select value={selectedReportType || ""} onValueChange={(value) => setSelectedReportType(value || null)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecteer type rapport" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Alle rapporten</SelectItem>
+                        <SelectItem value="certificate">Certificaten</SelectItem>
+                        <SelectItem value="pbm">PBM's</SelectItem>
+                        <SelectItem value="safety">Veiligheidsmiddelen</SelectItem>
+                        <SelectItem value="incident">Incidenten</SelectItem>
+                        <SelectItem value="exercise">Oefeningen</SelectItem>
+                        <SelectItem value="audit">Audit</SelectItem>
+                        <SelectItem value="bhv">BHV</SelectItem>
+                        <SelectItem value="compliance">Compliance</SelectItem>
+                        <SelectItem value="training">Training</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Locatie</Label>
+                    <Select value={selectedLocation || ""} onValueChange={(value) => setSelectedLocation(value || null)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Alle locaties" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Alle locaties</SelectItem>
+                        {getLocations().map(location => (
+                          <SelectItem key={location.id} value={location.id}>{location.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select value={selectedStatus || ""} onValueChange={(value) => setSelectedStatus(value || null)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Alle statussen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Alle statussen</SelectItem>
+                        <SelectItem value="active">Actief</SelectItem>
+                        <SelectItem value="expired">Verlopen</SelectItem>
+                        <SelectItem value="expiring">Bijna verlopen</SelectItem>
+                        <SelectItem value="action">Actie vereist</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Periode</Label>
+                    <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+                  </div>
+                  
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setSelectedReportType(null);
+                        setSelectedLocation(null);
+                        setSelectedStatus(null);
+                        setDateRange({
+                          from: new Date(),
+                          to: addDays(new Date(), 30),
+                        });
+                      }}
+                    >
+                      <XCircle className="mr-2 h-4 w-4" />
+                      Wissen
+                    </Button>
+                    <Button size="sm">
+                      <Filter className="mr-2 h-4 w-4" />
+                      Toepassen
+                    </Button>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
@@ -151,7 +675,16 @@ const Reports = () => {
                 </CardContent>
                 <CardFooter>
                   <div className="flex gap-2 w-full">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => {
+                        if (report.id === "9") setOpenReportDialog("bhv-coverage");
+                        else if (report.id === "10") setOpenReportDialog("compliance-scorecard");
+                        else if (report.id === "11") setOpenReportDialog("training-planning");
+                      }}
+                    >
                       <PieChart className="mr-2" size={16} />
                       Bekijken
                     </Button>
@@ -180,6 +713,22 @@ const Reports = () => {
               </Card>
             ))}
           </div>
+          
+          <Dialog open={!!openReportDialog} onOpenChange={() => setOpenReportDialog(null)}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {openReportDialog === "bhv-coverage" && "BHV-dekking per locatie"}
+                  {openReportDialog === "compliance-scorecard" && "Compliance Scorecard"}
+                  {openReportDialog === "training-planning" && "Opleidingsplanning rapport"}
+                </DialogTitle>
+                <DialogDescription>
+                  Gedetailleerd overzicht van de rapportgegevens
+                </DialogDescription>
+              </DialogHeader>
+              {renderReportDetail()}
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </div>

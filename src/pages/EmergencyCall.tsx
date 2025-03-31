@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -14,7 +13,6 @@ import {
   XCircle, 
   AlertCircle,
   User,
-  MapPin,
   Bell
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -36,11 +34,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { LocationSelector } from "@/components/common/LocationSelector";
 
 const EmergencyCall = () => {
   const [activeTab, setActiveTab] = useState("call");
   const [emergencyInProgress, setEmergencyInProgress] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("");
   
   // Demo BHV'ers
   const bhvMembers = [
@@ -85,6 +85,15 @@ const EmergencyCall = () => {
   ];
   
   const handleEmergencyCall = () => {
+    if (!selectedLocation) {
+      toast({
+        title: "Locatie ontbreekt",
+        description: "Selecteer eerst een locatie voordat u een BHV-oproep activeert.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setEmergencyInProgress(true);
     toast({
       title: "BHV-oproep geactiveerd!",
@@ -210,8 +219,16 @@ const EmergencyCall = () => {
                     
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Locatie</label>
+                      <LocationSelector 
+                        value={selectedLocation}
+                        onChange={setSelectedLocation}
+                        placeholder="Selecteer een locatie"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Specifieke plaats</label>
                       <div className="flex items-center gap-2">
-                        <MapPin className="text-gray-400" size={20} />
                         <Input placeholder="Bijv. Kantoor - 1e verdieping" />
                       </div>
                     </div>
