@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -43,6 +44,207 @@ import { LocationSelector, getLocations } from "@/components/common/LocationSele
 import { Label } from "@/components/ui/label";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { addDays } from "date-fns";
+import { DateRange } from "react-day-picker";
+
+// Mock data for reports
+const demoReports = [
+  {
+    id: "1",
+    title: "Certificatenoverzicht",
+    description: "Overzicht van alle certificaten en status",
+    updated: "Laatst bijgewerkt: 23 mei 2023",
+    type: "certificate",
+    icon: <FileText className="text-blue-500" size={24} />
+  },
+  {
+    id: "2",
+    title: "PBM Rapportage",
+    description: "Status van persoonlijke beschermingsmiddelen",
+    updated: "Laatst bijgewerkt: 15 juni 2023",
+    type: "pbm",
+    icon: <Shield className="text-green-500" size={24} />
+  },
+  {
+    id: "3",
+    title: "Incidentrapportage",
+    description: "Overzicht van gemelde incidenten",
+    updated: "Laatst bijgewerkt: 7 juli 2023",
+    type: "incident",
+    icon: <AlertTriangle className="text-amber-500" size={24} />
+  },
+  {
+    id: "4",
+    title: "Ontruimingsoefeningen",
+    description: "Status en planning van ontruimingsoefeningen",
+    updated: "Laatst bijgewerkt: 30 april 2023",
+    type: "exercise",
+    icon: <Users className="text-indigo-500" size={24} />
+  },
+  {
+    id: "5",
+    title: "Audit Resultaten",
+    description: "Resultaten van recente veiligheidsaudits",
+    updated: "Laatst bijgewerkt: 12 mei 2023",
+    type: "audit",
+    icon: <CheckCircle2 className="text-emerald-500" size={24} />
+  },
+  {
+    id: "6",
+    title: "Herinnering Verlopen Items",
+    description: "Items die aandacht vereisen",
+    updated: "Laatst bijgewerkt: 1 juli 2023",
+    type: "notification",
+    icon: <Bell className="text-red-500" size={24} />
+  },
+  {
+    id: "7",
+    title: "Veiligheidsmiddelen Status",
+    description: "Status van alle veiligheidsmiddelen",
+    updated: "Laatst bijgewerkt: 19 juni 2023",
+    type: "safety",
+    icon: <Shield className="text-cyan-500" size={24} />
+  },
+  {
+    id: "8",
+    title: "Opleidingsoverzicht",
+    description: "Status van verplichte en optionele trainingen",
+    updated: "Laatst bijgewerkt: 5 juli 2023",
+    type: "training",
+    icon: <BookOpen className="text-purple-500" size={24} />
+  },
+  {
+    id: "9",
+    title: "BHV-dekking per locatie",
+    description: "Analyse van BHV-capaciteit per locatie",
+    updated: "Laatst bijgewerkt: 10 juli 2023",
+    type: "bhv",
+    icon: <Users className="text-orange-500" size={24} />
+  },
+  {
+    id: "10",
+    title: "Compliance Scorecard",
+    description: "Mate van naleving van veiligheidsvoorschriften",
+    updated: "Laatst bijgewerkt: 18 juli 2023",
+    type: "compliance",
+    icon: <Award className="text-yellow-500" size={24} />
+  },
+  {
+    id: "11",
+    title: "Opleidingsplanning",
+    description: "Geplande trainingen en deelname",
+    updated: "Laatst bijgewerkt: 15 juli 2023",
+    type: "training",
+    icon: <Calendar className="text-violet-500" size={24} />
+  }
+];
+
+// Mock data for BHV coverage report
+const bhvCoverageData = [
+  { locationId: "1", locationName: "Hoofdkantoor Amsterdam", employees: 120, bhvRequired: 3, bhvAvailable: 5, status: "sufficient" },
+  { locationId: "2", locationName: "Productielocatie Rotterdam", employees: 80, bhvRequired: 2, bhvAvailable: 2, status: "sufficient" },
+  { locationId: "3", locationName: "Magazijn Utrecht", employees: 35, bhvRequired: 1, bhvAvailable: 0, status: "insufficient" },
+  { locationId: "4", locationName: "R&D Centrum Eindhoven", employees: 45, bhvRequired: 1, bhvAvailable: 2, status: "sufficient" },
+  { locationId: "5", locationName: "Distributiecentrum Zwolle", employees: 60, bhvRequired: 2, bhvAvailable: 1, status: "insufficient" }
+];
+
+// Mock data for Compliance Scorecard
+const complianceScoreData = [
+  { 
+    locationId: "1", 
+    locationName: "Hoofdkantoor Amsterdam", 
+    certificateScore: 92, 
+    pbmScore: 88, 
+    trainingScore: 95, 
+    elearningScore: 90, 
+    totalScore: 91 
+  },
+  { 
+    locationId: "2", 
+    locationName: "Productielocatie Rotterdam", 
+    certificateScore: 78, 
+    pbmScore: 95, 
+    trainingScore: 82, 
+    elearningScore: 75, 
+    totalScore: 83 
+  },
+  { 
+    locationId: "3", 
+    locationName: "Magazijn Utrecht", 
+    certificateScore: 65, 
+    pbmScore: 72, 
+    trainingScore: 60, 
+    elearningScore: 58, 
+    totalScore: 64 
+  },
+  { 
+    locationId: "4", 
+    locationName: "R&D Centrum Eindhoven", 
+    certificateScore: 97, 
+    pbmScore: 93, 
+    trainingScore: 98, 
+    elearningScore: 95, 
+    totalScore: 96 
+  },
+  { 
+    locationId: "5", 
+    locationName: "Distributiecentrum Zwolle", 
+    certificateScore: 75, 
+    pbmScore: 80, 
+    trainingScore: 78, 
+    elearningScore: 72, 
+    totalScore: 76 
+  }
+];
+
+// Mock data for Training Planning
+const trainingPlanningData = [
+  {
+    id: "1",
+    title: "BHV Basis Training",
+    date: "25 augustus 2023",
+    location: "Hoofdkantoor Amsterdam",
+    registeredSpots: 8,
+    totalSpots: 12,
+    registeredEmployees: [
+      "Anna de Vries", 
+      "Peter Jansen", 
+      "Sandra Bakker", 
+      "Mohammed Al-Farsi", 
+      "Julia Smit", 
+      "Thomas Berg", 
+      "Emma van Dijk", 
+      "David Janssen"
+    ]
+  },
+  {
+    id: "2",
+    title: "VCA Hercertificering",
+    date: "10 september 2023",
+    location: "Productielocatie Rotterdam",
+    registeredSpots: 5,
+    totalSpots: 10,
+    registeredEmployees: [
+      "Marco Visser", 
+      "Lieke van Vliet", 
+      "Jan de Boer", 
+      "Fatima El-Amrani", 
+      "Bram Hendriks"
+    ]
+  },
+  {
+    id: "3",
+    title: "Veilig Werken op Hoogte",
+    date: "15 september 2023",
+    location: "Magazijn Utrecht",
+    registeredSpots: 3,
+    totalSpots: 6,
+    registeredEmployees: [
+      "Daan Vermeulen", 
+      "Naomi de Groot", 
+      "Sven Mulder"
+    ]
+  }
+];
 
 const Reports = () => {
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
