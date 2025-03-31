@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -63,7 +62,7 @@ const RoleSelection = () => {
           
           <div className="space-y-4">
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6 group"
               variant="outline"
               onClick={() => handleRoleSelect("employee")}
             >
@@ -72,7 +71,7 @@ const RoleSelection = () => {
             </Button>
             
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6 group"
               variant="outline"
               onClick={() => handleRoleSelect("trainer")}
             >
@@ -81,7 +80,7 @@ const RoleSelection = () => {
             </Button>
             
             <Button 
-              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6"
+              className="w-full bg-white border border-gray-200 hover:bg-[#003366] hover:text-white hover:shadow-md transition-all text-gray-800 py-6 group"
               variant="outline"
               onClick={() => handleRoleSelect("employer")}
             >
