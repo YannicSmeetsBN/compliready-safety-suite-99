@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CallTab } from "./CallTab";
 import { MembersTab } from "./MembersTab";
 import { HistoryTab } from "./HistoryTab";
+import { BhvMember, CallHistoryItem } from "./types";
 
 interface EmergencyCallTabsProps {
   emergencyInProgress: boolean;
