@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -9,111 +10,13 @@ import {
   CardDescription 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Plus, 
-  Download, 
-  Filter, 
-  FileText, 
-  Search, 
-  Edit, 
-  Trash,
-  Clock,
-  Bell,
-  AlertTriangle
-} from "lucide-react";
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow 
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-
-// Tachograph card types
-type TachographStatus = "actief" | "verlopen" | "binnenkort-verlopen";
-
-type TachographCard = {
-  id: string;
-  employeeName: string;
-  department: string;
-  cardNumber: string;
-  issuedDate: string;
-  expiryDate: string;
-  proofUrl?: string;
-  status: TachographStatus;
-};
-
-// Sample tachograph card data
-const sampleTachographCards: TachographCard[] = [
-  {
-    id: "card-1",
-    employeeName: "Jan Jansen",
-    department: "Transport Amsterdam",
-    cardNumber: "NL1234567890",
-    issuedDate: "2022-06-15",
-    expiryDate: "2025-06-15",
-    proofUrl: "#",
-    status: "actief"
-  },
-  {
-    id: "card-2",
-    employeeName: "Piet Pietersen",
-    department: "Transport Rotterdam",
-    cardNumber: "NL0987654321",
-    issuedDate: "2020-03-10",
-    expiryDate: "2024-05-01",
-    proofUrl: "#",
-    status: "binnenkort-verlopen"
-  },
-  {
-    id: "card-3",
-    employeeName: "Klaas Klaassen",
-    department: "Transport Utrecht",
-    cardNumber: "NL1122334455",
-    issuedDate: "2019-11-20",
-    expiryDate: "2023-11-20",
-    status: "verlopen"
-  },
-  {
-    id: "card-4",
-    employeeName: "Anna Jansma",
-    department: "Transport Amsterdam",
-    cardNumber: "NL5544332211",
-    issuedDate: "2023-01-05",
-    expiryDate: "2026-01-05",
-    proofUrl: "#",
-    status: "actief"
-  }
-];
-
-// Status Badge component for tachograph card status
-const StatusBadge = ({ status }: { status: TachographStatus }) => {
-  const statusConfig = {
-    "actief": { color: "bg-green-100 text-green-800", label: "Actief" },
-    "verlopen": { color: "bg-red-100 text-red-800", label: "Verlopen" },
-    "binnenkort-verlopen": { color: "bg-amber-100 text-amber-800", label: "Binnenkort verlopen" }
-  };
-
-  const config = statusConfig[status];
-
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
-      {config.label}
-    </span>
-  );
-};
-
-// Format date to Dutch format
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("nl-NL", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  });
-};
+import { Plus } from "lucide-react";
+import { TachographStatus } from "@/components/tachograph/StatusBadge";
+import { StatisticsCards } from "@/components/tachograph/StatisticsCards";
+import { TachographFilters } from "@/components/tachograph/TachographFilters";
+import { TachographTable } from "@/components/tachograph/TachographTable";
+import { formatDate } from "@/components/tachograph/utils";
+import { sampleTachographCards } from "@/components/tachograph/sampleData";
 
 const Tachograph = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -143,43 +46,7 @@ const Tachograph = () => {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Card>
-              <CardContent className="flex items-center p-4">
-                <div className="p-2 rounded-full bg-green-100 mr-3">
-                  <Clock className="text-green-600" size={20} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Actieve Tachograafkaarten</p>
-                  <p className="text-xl font-bold">{sampleTachographCards.filter(c => c.status === "actief").length}</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="flex items-center p-4">
-                <div className="p-2 rounded-full bg-amber-100 mr-3">
-                  <Bell className="text-amber-600" size={20} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Binnenkort verlopen</p>
-                  <p className="text-xl font-bold">{sampleTachographCards.filter(c => c.status === "binnenkort-verlopen").length}</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="flex items-center p-4">
-                <div className="p-2 rounded-full bg-red-100 mr-3">
-                  <AlertTriangle className="text-red-600" size={20} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Verlopen kaarten</p>
-                  <p className="text-xl font-bold">{sampleTachographCards.filter(c => c.status === "verlopen").length}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <StatisticsCards tachographCards={sampleTachographCards} />
 
           {/* Main content */}
           <Card className="mb-6">
@@ -191,99 +58,18 @@ const Tachograph = () => {
             </CardHeader>
             <CardContent>
               {/* Filters */}
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-3 text-gray-400" size={16} />
-                  <Input 
-                    placeholder="Zoek op naam of kaartnummer" 
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button 
-                    variant={filterStatus === "all" ? "default" : "outline"}
-                    className={filterStatus === "all" ? "bg-compliblue hover:bg-compliblue/90" : ""}
-                    onClick={() => setFilterStatus("all")}
-                  >
-                    Alle
-                  </Button>
-                  <Button 
-                    variant={filterStatus === "actief" ? "default" : "outline"}
-                    className={filterStatus === "actief" ? "bg-green-600 hover:bg-green-700" : ""}
-                    onClick={() => setFilterStatus("actief")}
-                  >
-                    Actief
-                  </Button>
-                  <Button 
-                    variant={filterStatus === "binnenkort-verlopen" ? "default" : "outline"}
-                    className={filterStatus === "binnenkort-verlopen" ? "bg-amber-500 hover:bg-amber-600" : ""}
-                    onClick={() => setFilterStatus("binnenkort-verlopen")}
-                  >
-                    Binnenkort Verlopen
-                  </Button>
-                  <Button 
-                    variant={filterStatus === "verlopen" ? "default" : "outline"}
-                    className={filterStatus === "verlopen" ? "bg-red-600 hover:bg-red-700" : ""}
-                    onClick={() => setFilterStatus("verlopen")}
-                  >
-                    Verlopen
-                  </Button>
-                </div>
-              </div>
+              <TachographFilters 
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filterStatus={filterStatus}
+                setFilterStatus={setFilterStatus}
+              />
               
               {/* Tachograph Cards Table */}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Naam medewerker</TableHead>
-                    <TableHead>Afdeling / Locatie</TableHead>
-                    <TableHead>Kaartnummer</TableHead>
-                    <TableHead>Afgegeven op</TableHead>
-                    <TableHead>Verloopt op</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Acties</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredCards.length > 0 ? (
-                    filteredCards.map((card) => (
-                      <TableRow key={card.id}>
-                        <TableCell className="font-medium">{card.employeeName}</TableCell>
-                        <TableCell>{card.department}</TableCell>
-                        <TableCell>{card.cardNumber}</TableCell>
-                        <TableCell>{formatDate(card.issuedDate)}</TableCell>
-                        <TableCell>{formatDate(card.expiryDate)}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={card.status} />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            {card.proofUrl && (
-                              <Button variant="ghost" size="sm">
-                                <FileText size={16} />
-                              </Button>
-                            )}
-                            <Button variant="ghost" size="sm">
-                              <Edit size={16} />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Trash size={16} />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center py-10 text-gray-500">
-                        Geen tachograafkaarten gevonden
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+              <TachographTable 
+                cards={filteredCards}
+                formatDate={formatDate}
+              />
             </CardContent>
           </Card>
         </main>
