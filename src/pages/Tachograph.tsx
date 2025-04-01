@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -19,7 +18,8 @@ import {
   Edit, 
   Trash,
   Clock,
-  Bell
+  Bell,
+  AlertTriangle
 } from "lucide-react";
 import { 
   Table,
