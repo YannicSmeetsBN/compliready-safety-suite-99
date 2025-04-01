@@ -11,7 +11,8 @@ import {
   Bell,
   AlertTriangle,
   Phone,
-  Building
+  Building,
+  Clock
 } from "lucide-react";
 
 type SidebarItemProps = {
@@ -105,12 +106,21 @@ export const Sidebar = () => {
           hidden={!isEmployer}
         />
         
-        {/* Risk Assessment - visible to employers only */}
+        {/* Document Management (previously Risk Assessment) - visible to employers only */}
         <SidebarItem 
-          icon={<AlertTriangle />} 
-          label="RI&E Generator" 
-          to="/risk-assessment" 
-          active={isActive("/risk-assessment")} 
+          icon={<FileText />} 
+          label="Documentbeheer" 
+          to="/document-management" 
+          active={isActive("/document-management") || isActive("/risk-assessment")} 
+          hidden={!isEmployer}
+        />
+        
+        {/* Tachograph - visible to employers only */}
+        <SidebarItem 
+          icon={<Clock />} 
+          label="Tachograaf" 
+          to="/tachograph" 
+          active={isActive("/tachograph")} 
           hidden={!isEmployer}
         />
         

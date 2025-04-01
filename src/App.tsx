@@ -12,12 +12,13 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Certificates from "./pages/Certificates";
 import Employees from "./pages/Employees";
-import EmployeeDetail from "./pages/EmployeeDetail"; // Nieuwe import
+import EmployeeDetail from "./pages/EmployeeDetail";
 import SafetyManagement from "./pages/SafetyManagement";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
-import RiskAssessment from "./pages/RiskAssessment";
+import DocumentManagement from "./pages/DocumentManagement";
+import Tachograph from "./pages/Tachograph";
 import EmergencyCall from "./pages/EmergencyCall";
 import PartnerPortal from "./pages/PartnerPortal";
 import ClientDetail from "./pages/ClientDetail";
@@ -86,9 +87,24 @@ const App = () => (
               </ProtectedRoute>
             } />
             
+            {/* Document Management (previously Risk Assessment) */}
+            <Route path="/document-management" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <DocumentManagement />
+              </ProtectedRoute>
+            } />
+            
+            {/* Redirect old risk-assessment path to new document-management path */}
             <Route path="/risk-assessment" element={
               <ProtectedRoute allowedRoles={["employer"]}>
-                <RiskAssessment />
+                <DocumentManagement />
+              </ProtectedRoute>
+            } />
+            
+            {/* New Tachograph route */}
+            <Route path="/tachograph" element={
+              <ProtectedRoute allowedRoles={["employer"]}>
+                <Tachograph />
               </ProtectedRoute>
             } />
             
