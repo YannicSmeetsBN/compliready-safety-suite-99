@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,7 @@ import Tachograph from "./pages/Tachograph";
 import EmergencyCall from "./pages/EmergencyCall";
 import PartnerPortal from "./pages/PartnerPortal";
 import ClientDetail from "./pages/ClientDetail";
+import RiskAssessment from "./pages/RiskAssessment";
 
 const queryClient = new QueryClient();
 
@@ -94,7 +96,7 @@ const App = () => (
               
               <Route path="/risk-assessment" element={
                 <ProtectedRoute allowedRoles={["employer"]}>
-                  <DocumentManagement />
+                  <RiskAssessment />
                 </ProtectedRoute>
               } />
               

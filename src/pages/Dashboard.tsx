@@ -50,11 +50,13 @@ const Dashboard = () => {
       title: "BHV Oefening",
       date: "Gepland op 15-07-2023",
       status: "info" as const,
+      link: "/safety?tab=exercises",
     },
     {
       title: "Ontruimingsoefening",
       date: "Gepland op 22-07-2023",
       status: "info" as const,
+      link: "/safety?tab=exercises",
     }
   ];
 
@@ -63,11 +65,13 @@ const Dashboard = () => {
       title: "Val van hoogte - Bouwplaats A",
       date: "Gemeld op 05-07-2023",
       status: "danger" as const,
+      link: "/safety?tab=incidents",
     },
     {
       title: "Bijna-ongeval - Magazijn",
       date: "Gemeld op 12-07-2023",
       status: "warning" as const,
+      link: "/safety?tab=incidents",
     }
   ];
 
@@ -76,7 +80,7 @@ const Dashboard = () => {
       title: "BHV Certificaat - Jan Janssen",
       date: "Verloopt over 30 dagen",
       status: "warning" as const,
-      link: "/employees/jan-jansen#trainings",
+      link: "/employees/jan-janssen#trainings",
     },
     {
       title: "VCA Basis - Pieter Pietersen",
@@ -97,16 +101,19 @@ const Dashboard = () => {
       title: "Veiligheidshelm - Klaas Klaassen",
       date: "Keuring vereist binnen 7 dagen",
       status: "warning" as const,
+      link: "/safety?tab=pbm",
     },
     {
       title: "Brandblusser - Magazijn",
       date: "Keuring verlopen sinds 15-05-2023",
       status: "danger" as const,
+      link: "/safety?tab=equipment",
     },
     {
       title: "AED - Receptie",
       date: "Keuring succesvol afgerond op 01-06-2023",
       status: "success" as const,
+      link: "/safety?tab=equipment",
     },
   ];
 
@@ -115,16 +122,19 @@ const Dashboard = () => {
       title: "BHV Oefening",
       date: "Gepland op 15-07-2023",
       status: "info" as const,
+      link: "/safety?tab=exercises",
     },
     {
       title: "Ontruimingsoefening",
       date: "Gepland op 22-07-2023",
       status: "info" as const,
+      link: "/safety?tab=exercises",
     },
     {
       title: "Brandoefening",
       date: "Succesvol afgerond op 01-05-2023",
       status: "success" as const,
+      link: "/safety?tab=exercises",
     },
   ];
 
@@ -133,16 +143,19 @@ const Dashboard = () => {
       title: "Val van hoogte - Bouwplaats A",
       date: "Gemeld op 05-07-2023",
       status: "danger" as const,
+      link: "/safety?tab=incidents",
     },
     {
       title: "Bijna-ongeval - Magazijn",
       date: "Gemeld op 12-07-2023",
       status: "warning" as const,
+      link: "/safety?tab=incidents",
     },
     {
       title: "Kleine snijwond - Werkplaats",
       date: "Gemeld op 20-07-2023",
       status: "info" as const,
+      link: "/safety?tab=incidents",
     },
   ];
 
@@ -178,7 +191,9 @@ const Dashboard = () => {
   };
 
   const handleNotificationClick = (link: string) => {
-    navigate(link);
+    if (link) {
+      navigate(link);
+    }
   };
 
   const renderActiveShape = (props: any) => {
@@ -229,12 +244,14 @@ const Dashboard = () => {
             icon={<FileText size={20} />}
             notifications={employeeCertificateNotifications}
             viewAllLink="/employees"
+            onClick={handleNotificationClick}
           />
           <NotificationCard
             title="Geplande oefeningen"
             icon={<Calendar size={20} />}
             notifications={employeeExerciseNotifications}
             viewAllLink="/emergency-call"
+            onClick={handleNotificationClick}
           />
         </div>
 
@@ -245,6 +262,7 @@ const Dashboard = () => {
             icon={<Bell size={20} />}
             notifications={employeeIncidentNotifications}
             viewAllLink="/emergency-call"
+            onClick={handleNotificationClick}
           />
           <Card>
             <CardHeader className="pb-2">

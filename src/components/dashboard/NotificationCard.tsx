@@ -48,8 +48,8 @@ export const NotificationCard = ({
   const handleNotificationClick = (notification: NotificationItem) => {
     if (onClick && notification.link) {
       onClick(notification.link);
-    } else if (onClick) {
-      onClick();
+    } else if (notification.link) {
+      navigate(notification.link);
     }
   };
 
