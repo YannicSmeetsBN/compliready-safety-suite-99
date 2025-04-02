@@ -1,5 +1,5 @@
 
-import { Calendar, Plus, Edit, Trash } from "lucide-react";
+import { Calendar, Plus, Edit, Trash, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +16,12 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { EmployeeStatusBadge } from "../EmployeeStatusBadge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface EmployeeTrainingsProps {
   trainings: any[];
@@ -58,6 +64,7 @@ export const EmployeeTrainings = ({
                 <TableHead>Training</TableHead>
                 <TableHead>Datum</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Details</TableHead>
                 <TableHead className="text-right">Acties</TableHead>
               </TableRow>
             </TableHeader>
@@ -68,6 +75,28 @@ export const EmployeeTrainings = ({
                   <TableCell>{training.date}</TableCell>
                   <TableCell>
                     <EmployeeStatusBadge status={training.status} />
+                  </TableCell>
+                  <TableCell>
+                    {training.time && training.location && training.trainer ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Info size={16} />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent className="p-3 max-w-xs">
+                            <div className="space-y-1 text-sm">
+                              <p><strong>Tijd:</strong> {training.time}</p>
+                              <p><strong>Locatie:</strong> {training.location}</p>
+                              <p><strong>Trainer:</strong> {training.trainer}</p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <span className="text-gray-400 text-sm">Geen details</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 

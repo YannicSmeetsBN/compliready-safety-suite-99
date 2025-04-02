@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { addElearningToEmployee } from "@/data/dataManager";
+import { format } from "date-fns";
 
 interface AddElearningFormProps {
   employeeId: string;
@@ -37,17 +38,12 @@ export const AddElearningForm = ({
 }: AddElearningFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
-    date: "",
+    date: format(new Date(), 'yyyy-MM-dd'), // Current date as the invitation date
     progress: "0%",
-    status: "in-progress",
+    status: "invited", // Fixed status for "Medewerker uitgenodigd"
   });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSelectChange = (name: string, value: string) => {
     if (name === "module") {
@@ -56,8 +52,6 @@ export const AddElearningForm = ({
       if (selectedModule) {
         setFormData((prev) => ({ ...prev, name: selectedModule.name }));
       }
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -88,7 +82,7 @@ export const AddElearningForm = ({
     if (success) {
       toast({
         title: "E-learning toegewezen",
-        description: `${formData.name} is succesvol toegewezen.`,
+        description: `${formData.name} is succesvol toegewezen aan de medewerker.`,
       });
       onSuccess();
     } else {
@@ -103,8 +97,8 @@ export const AddElearningForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 py-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2 md:col-span-2">
+      <div className="space-y-4">
+        <div className="space-y-2">
           <Label htmlFor="module">E-learning module</Label>
           <Select
             onValueChange={(value) => handleSelectChange("module", value)}
@@ -122,32 +116,10 @@ export const AddElearningForm = ({
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="date">Deadline datum</Label>
-          <Input
-            id="date"
-            name="date"
-            type="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
-          <Select
-            value={formData.status}
-            onValueChange={(value) => handleSelectChange("status", value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecteer status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="in-progress">In uitvoering</SelectItem>
-              <SelectItem value="completed">Afgerond</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="bg-gray-50 p-4 rounded-md mt-4">
+          <p className="text-sm text-gray-600">
+            De medewerker wordt automatisch uitgenodigd voor deze e-learning module op {formatDate(formData.date)}.
+          </p>
         </div>
       </div>
 
@@ -158,9 +130,9 @@ export const AddElearningForm = ({
         <Button 
           type="submit" 
           className="bg-compliblue hover:bg-compliblue/90"
-          disabled={submitting || !formData.name || !formData.date}
+          disabled={submitting || !formData.name}
         >
-          {submitting ? "Opslaan..." : "Opslaan"}
+          {submitting ? "Opslaan..." : "Medewerker uitnodigen"}
         </Button>
       </div>
     </form>

@@ -15,12 +15,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { addTrainingToEmployee } from "@/data/dataManager";
@@ -44,24 +38,54 @@ const trainingTypes = [
   { id: "forklift", name: "Heftruck" }
 ];
 
-// Mock data for training providers and available dates
+// Enhanced mock data for training providers and available dates
 const trainingProviders = {
   "bhv-new": [
     {
       id: 1,
       name: "Veiligheid & Co",
       availableDates: [
-        { date: new Date(2024, 7, 15), spotsLeft: 5 },
-        { date: new Date(2024, 7, 20), spotsLeft: 3 },
-        { date: new Date(2024, 7, 27), spotsLeft: 0 } // Full
+        { 
+          date: new Date(2024, 7, 15), 
+          spotsLeft: 5,
+          time: "09:00 - 16:00",
+          location: "Hoofdkantoor Amsterdam",
+          trainer: "Jan Bakker"
+        },
+        { 
+          date: new Date(2024, 7, 20), 
+          spotsLeft: 3,
+          time: "09:30 - 16:30",
+          location: "Trainingscentrum Utrecht",
+          trainer: "Petra de Jong"
+        },
+        { 
+          date: new Date(2024, 7, 27), 
+          spotsLeft: 0,
+          time: "08:30 - 15:30",
+          location: "Hoofdkantoor Amsterdam",
+          trainer: "Jan Bakker"
+        } // Full
       ]
     },
     {
       id: 2,
       name: "BHV Centrum Nederland",
       availableDates: [
-        { date: new Date(2024, 7, 10), spotsLeft: 2 },
-        { date: new Date(2024, 8, 5), spotsLeft: 8 }
+        { 
+          date: new Date(2024, 7, 10), 
+          spotsLeft: 2,
+          time: "10:00 - 17:00",
+          location: "Trainingscentrum Rotterdam",
+          trainer: "Marco Visser"
+        },
+        { 
+          date: new Date(2024, 8, 5), 
+          spotsLeft: 8,
+          time: "09:00 - 16:00",
+          location: "Trainingscentrum Eindhoven",
+          trainer: "Lisa Jansen"
+        }
       ]
     }
   ],
@@ -70,15 +94,33 @@ const trainingProviders = {
       id: 1,
       name: "Veiligheid & Co",
       availableDates: [
-        { date: new Date(2024, 7, 18), spotsLeft: 4 },
-        { date: new Date(2024, 8, 1), spotsLeft: 0 } // Full
+        { 
+          date: new Date(2024, 7, 18), 
+          spotsLeft: 4,
+          time: "09:00 - 13:00",
+          location: "Hoofdkantoor Amsterdam",
+          trainer: "Jan Bakker"
+        },
+        { 
+          date: new Date(2024, 8, 1), 
+          spotsLeft: 0,
+          time: "13:00 - 17:00",
+          location: "Trainingscentrum Utrecht",
+          trainer: "Petra de Jong"
+        } // Full
       ]
     },
     {
       id: 3,
       name: "Hulpverlening Academie",
       availableDates: [
-        { date: new Date(2024, 7, 22), spotsLeft: 6 }
+        { 
+          date: new Date(2024, 7, 22), 
+          spotsLeft: 6,
+          time: "09:00 - 13:00",
+          location: "Trainingscentrum Den Haag",
+          trainer: "Robert Smit"
+        }
       ]
     }
   ],
@@ -87,8 +129,20 @@ const trainingProviders = {
       id: 4,
       name: "VCA Opleidingen",
       availableDates: [
-        { date: new Date(2024, 7, 12), spotsLeft: 7 },
-        { date: new Date(2024, 7, 25), spotsLeft: 4 }
+        { 
+          date: new Date(2024, 7, 12), 
+          spotsLeft: 7,
+          time: "09:00 - 16:00",
+          location: "Hoofdkantoor Amsterdam",
+          trainer: "Kees Janssen"
+        },
+        { 
+          date: new Date(2024, 7, 25), 
+          spotsLeft: 4,
+          time: "09:00 - 16:00",
+          location: "Trainingscentrum Utrecht",
+          trainer: "Marieke de Vries"
+        }
       ]
     }
   ],
@@ -97,8 +151,20 @@ const trainingProviders = {
       id: 4,
       name: "VCA Opleidingen",
       availableDates: [
-        { date: new Date(2024, 7, 13), spotsLeft: 6 },
-        { date: new Date(2024, 7, 26), spotsLeft: 2 }
+        { 
+          date: new Date(2024, 7, 13), 
+          spotsLeft: 6,
+          time: "09:00 - 17:00",
+          location: "Hoofdkantoor Amsterdam",
+          trainer: "Peter Verhoeven"
+        },
+        { 
+          date: new Date(2024, 7, 26), 
+          spotsLeft: 2,
+          time: "09:00 - 17:00",
+          location: "Trainingscentrum Utrecht",
+          trainer: "Marieke de Vries"
+        }
       ]
     }
   ],
@@ -107,7 +173,13 @@ const trainingProviders = {
       id: 5,
       name: "Rode Kruis",
       availableDates: [
-        { date: new Date(2024, 8, 3), spotsLeft: 5 }
+        { 
+          date: new Date(2024, 8, 3), 
+          spotsLeft: 5,
+          time: "10:00 - 16:00",
+          location: "Rode Kruis Centrum Amsterdam",
+          trainer: "Sandra Nieuwenhuis"
+        }
       ]
     }
   ],
@@ -116,8 +188,20 @@ const trainingProviders = {
       id: 6,
       name: "Logistiek Training Centrum",
       availableDates: [
-        { date: new Date(2024, 7, 19), spotsLeft: 4 },
-        { date: new Date(2024, 8, 9), spotsLeft: 7 }
+        { 
+          date: new Date(2024, 7, 19), 
+          spotsLeft: 4,
+          time: "08:30 - 16:30",
+          location: "Praktijkcentrum Almere",
+          trainer: "Johan Willemsen"
+        },
+        { 
+          date: new Date(2024, 8, 9), 
+          spotsLeft: 7,
+          time: "08:30 - 16:30",
+          location: "Praktijkcentrum Rotterdam",
+          trainer: "Bas Evers"
+        }
       ]
     }
   ]
@@ -132,12 +216,17 @@ export const AddTrainingForm = ({
     name: "",
     date: "",
     status: "planned",
-    provider: ""
+    provider: "",
+    time: "",
+    location: "",
+    trainer: ""
   });
   const [selectedTrainingType, setSelectedTrainingType] = useState("");
   const [selectedProvider, setSelectedProvider] = useState<number | null>(null);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
+  const [availableTrainingSessions, setAvailableTrainingSessions] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedSession, setSelectedSession] = useState<any | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -147,7 +236,9 @@ export const AddTrainingForm = ({
       // Reset selected provider and date when training type changes
       setSelectedProvider(null);
       setSelectedDate(undefined);
+      setSelectedSession(null);
       setAvailableDates([]);
+      setAvailableTrainingSessions([]);
     }
   }, [selectedTrainingType]);
 
@@ -157,11 +248,12 @@ export const AddTrainingForm = ({
       const providerData = trainingProviders[selectedTrainingType]?.find(p => p.id === selectedProvider);
       if (providerData) {
         // Only include dates with available spots
-        const dates = providerData.availableDates
-          .filter(d => d.spotsLeft > 0)
-          .map(d => d.date);
+        const sessions = providerData.availableDates.filter(d => d.spotsLeft > 0);
+        setAvailableTrainingSessions(sessions);
+        const dates = sessions.map(d => d.date);
         setAvailableDates(dates);
         setSelectedDate(undefined);
+        setSelectedSession(null);
       }
     }
   }, [selectedProvider, selectedTrainingType]);
@@ -173,12 +265,24 @@ export const AddTrainingForm = ({
       const providerData = trainingProviders[selectedTrainingType]?.find(p => p.id === selectedProvider);
       
       if (selectedTraining && providerData) {
-        setFormData({
-          name: `${selectedTraining.name} (${providerData.name})`,
-          date: format(selectedDate, 'yyyy-MM-dd'),
-          status: "planned",
-          provider: providerData.name
-        });
+        const session = providerData.availableDates.find(s => 
+          s.date.getFullYear() === selectedDate.getFullYear() &&
+          s.date.getMonth() === selectedDate.getMonth() &&
+          s.date.getDate() === selectedDate.getDate()
+        );
+        
+        if (session) {
+          setSelectedSession(session);
+          setFormData({
+            name: `${selectedTraining.name} (${providerData.name})`,
+            date: format(selectedDate, 'yyyy-MM-dd'),
+            status: "planned",
+            provider: providerData.name,
+            time: session.time,
+            location: session.location,
+            trainer: session.trainer
+          });
+        }
       }
     }
   }, [selectedDate, selectedTrainingType, selectedProvider]);
@@ -306,22 +410,36 @@ export const AddTrainingForm = ({
           </div>
         )}
 
-        {selectedDate && (
-          <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecteer status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="planned">Gepland</SelectItem>
-                <SelectItem value="completed">Afgerond</SelectItem>
-                <SelectItem value="cancelled">Geannuleerd</SelectItem>
-              </SelectContent>
-            </Select>
+        {selectedSession && (
+          <div className="mt-4 border rounded-md p-4 bg-gray-50">
+            <h3 className="font-medium mb-2">Geselecteerde trainingsessie:</h3>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 font-semibold">Training:</td>
+                  <td className="py-2">{formData.name}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 font-semibold">Datum:</td>
+                  <td className="py-2">{selectedDate ? format(selectedDate, "d MMMM yyyy", { locale: nl }) : ""}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 font-semibold">Tijd:</td>
+                  <td className="py-2">{selectedSession.time}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 font-semibold">Locatie:</td>
+                  <td className="py-2">{selectedSession.location}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 font-semibold">Trainer:</td>
+                  <td className="py-2">{selectedSession.trainer}</td>
+                </tr>
+              </tbody>
+            </table>
+            <p className="text-sm mt-3 text-gray-600">
+              Nog {selectedSession.spotsLeft} plaats(en) beschikbaar
+            </p>
           </div>
         )}
       </div>

@@ -30,6 +30,20 @@ export const EmployeeElearnings = ({
   handleEdit,
   handleDelete
 }: EmployeeElearningsProps) => {
+  // Function to translate status to Dutch
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "invited":
+        return "Medewerker uitgenodigd";
+      case "in-progress":
+        return "In uitvoering";
+      case "completed":
+        return "Afgerond";
+      default:
+        return status;
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -69,7 +83,7 @@ export const EmployeeElearnings = ({
                   <TableCell>{elearning.date}</TableCell>
                   <TableCell>{elearning.progress}</TableCell>
                   <TableCell>
-                    <EmployeeStatusBadge status={elearning.status} />
+                    <EmployeeStatusBadge status={elearning.status} label={getStatusLabel(elearning.status)} />
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 
