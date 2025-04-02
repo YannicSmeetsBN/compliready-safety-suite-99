@@ -5,7 +5,7 @@ export const employeeCertificateNotifications = [
     title: "BHV Certificaat - Jan Jansen",
     date: "Verloopt over 30 dagen",
     status: "warning" as const,
-    link: "/employees/jan-jansen#trainings",
+    link: "/employees/1#trainings", // Gewijzigd van "jan-jansen" naar "1"
   }
 ];
 
@@ -45,19 +45,19 @@ export const certificateNotifications = [
     title: "BHV Certificaat - Jan Jansen",
     date: "Verloopt over 30 dagen",
     status: "warning" as const,
-    link: "/employees/jan-jansen#trainings",
+    link: "/employees/1#trainings", // Gewijzigd van "jan-jansen" naar "1"
   },
   {
     title: "VCA Basis - Pieter Pietersen",
     date: "Verloopt over 14 dagen",
     status: "warning" as const,
-    link: "/employees/pieter-pietersen#certificates",
+    link: "/employees/2#certificates", // Gewijzigd van "pieter-pietersen" naar "2"
   },
   {
     title: "EHBO Diploma - Maria Willemsen",
     date: "Verlopen sinds 10-01-2023",
     status: "danger" as const,
-    link: "/employees/maria-willemsen#certificates",
+    link: "/employees/3#certificates", // Gewijzigd van "maria-willemsen" naar "3"
   },
 ];
 
@@ -150,5 +150,6 @@ export const actionItems = [
   { action: "AED training organiseren", deadline: "15-09-2023", status: "open", link: "/certificates?type=aed" },
   { action: "RI&E actualiseren", deadline: "30-09-2023", status: "open", link: "/risk-assessment" },
   { action: "Vluchtwegmarkering controle", deadline: "10-08-2023", status: "open", link: "/safety?tab=equipment" },
-  { action: "Klaas Klaassen gaat op 30-04-2025 uit dienst, zorg voor een vervangende BHV'er.", deadline: "30-03-2025", status: "open", link: "/employees/klaas-klaassen" },
+  { action: "Klaas Klaassen gaat op 30-04-2025 uit dienst, zorg voor een vervangende BHV'er.", deadline: "30-03-2025", status: "open", link: "/employees/4", // Gewijzigd van "klaas-klaassen" naar "4"
+  },
 ];
