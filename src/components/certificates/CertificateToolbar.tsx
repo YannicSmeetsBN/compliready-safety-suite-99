@@ -2,15 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { CertificateForm } from "./CertificateForm";
+import { Search } from "lucide-react";
 
 interface CertificateToolbarProps {
   searchTerm: string;
@@ -35,21 +27,6 @@ export const CertificateToolbar: React.FC<CertificateToolbarProps> = ({
           className="pl-10"
         />
       </div>
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="bg-compliblue hover:bg-compliblue/90">
-            <Plus className="mr-2" size={16} />
-            Nieuw certificaat
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Certificaat toevoegen</DialogTitle>
-          </DialogHeader>
-          <CertificateForm />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

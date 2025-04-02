@@ -62,7 +62,11 @@ const ppeTypes = [
   },
 ];
 
-const PPEOverview = () => {
+interface PPEOverviewProps {
+  onAddPPEType: () => void;
+}
+
+const PPEOverview = ({ onAddPPEType }: PPEOverviewProps) => {
   const navigate = useNavigate();
   
   const handlePPETypeClick = (ppeId: string) => {
@@ -79,7 +83,10 @@ const PPEOverview = () => {
       
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">PBM-types</h2>
-        <Button className="bg-compliblue hover:bg-compliblue/90">
+        <Button 
+          className="bg-compliblue hover:bg-compliblue/90"
+          onClick={onAddPPEType}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Nieuw PBM-type toevoegen
         </Button>

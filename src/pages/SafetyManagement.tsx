@@ -23,15 +23,35 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PPEOverview from "@/components/safety/PPEOverview";
 import PPEDetail from "@/components/safety/PPEDetail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AddPPETypeForm } from "@/components/safety/AddPPETypeForm";
+import { AddSafetyEquipmentForm } from "@/components/safety/AddSafetyEquipmentForm";
+import { AddIncidentForm } from "@/components/safety/AddIncidentForm";
+import { AddExerciseForm } from "@/components/safety/AddExerciseForm";
+import { useToast } from "@/hooks/use-toast";
 
 const SafetyManagement = () => {
   const [locationFilter, setLocationFilter] = useState('all');
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('pbm');
   const location = useLocation();
+  const { toast } = useToast();
+  
+  // State for dialog open/close
+  const [isPPETypeDialogOpen, setIsPPETypeDialogOpen] = useState(false);
+  const [isEquipmentDialogOpen, setIsEquipmentDialogOpen] = useState(false);
+  const [isIncidentDialogOpen, setIsIncidentDialogOpen] = useState(false);
+  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = useState(false);
   
   // Parse the tab parameter from the URL
   useEffect(() => {
@@ -84,7 +104,25 @@ const SafetyManagement = () => {
                 </CardHeader>
                 <CardContent>
                   <Routes>
-                    <Route path="/" element={<PPEOverview />} />
+                    <Route path="/" element={
+                      <>
+                        <Dialog open={isPPETypeDialogOpen} onOpenChange={setIsPPETypeDialogOpen}>
+                          <DialogContent className="sm:max-w-[600px]">
+                            <DialogHeader>
+                              <DialogTitle>Nieuw PBM-type toevoegen</DialogTitle>
+                              <DialogDescription>
+                                Voeg een nieuw type persoonlijk beschermingsmiddel toe aan het systeem.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <AddPPETypeForm
+                              onSuccess={() => setIsPPETypeDialogOpen(false)}
+                              onCancel={() => setIsPPETypeDialogOpen(false)}
+                            />
+                          </DialogContent>
+                        </Dialog>
+                        <PPEOverview onAddPPEType={() => setIsPPETypeDialogOpen(true)} />
+                      </>
+                    } />
                     <Route path="/ppe/:ppeId" element={<PPEDetail />} />
                   </Routes>
                 </CardContent>
@@ -111,9 +149,25 @@ const SafetyManagement = () => {
                         <option value="receptie">Receptie</option>
                       </select>
                     </div>
-                    <Button className="bg-compliblue hover:bg-compliblue/90">
-                      Nieuw veiligheidsmiddel toevoegen
-                    </Button>
+                    <Dialog open={isEquipmentDialogOpen} onOpenChange={setIsEquipmentDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="bg-compliblue hover:bg-compliblue/90">
+                          Nieuw veiligheidsmiddel toevoegen
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[600px]">
+                        <DialogHeader>
+                          <DialogTitle>Veiligheidsmiddel toevoegen</DialogTitle>
+                          <DialogDescription>
+                            Voeg een nieuw veiligheidsmiddel toe aan een locatie.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <AddSafetyEquipmentForm
+                          onSuccess={() => setIsEquipmentDialogOpen(false)}
+                          onCancel={() => setIsEquipmentDialogOpen(false)}
+                        />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -178,9 +232,25 @@ const SafetyManagement = () => {
                     <AlertTriangle className="h-6 w-6 text-compliblue" />
                     <span>Incidentenregistratie</span>
                   </CardTitle>
-                  <Button className="bg-compliblue hover:bg-compliblue/90">
-                    Nieuw incident melden
-                  </Button>
+                  <Dialog open={isIncidentDialogOpen} onOpenChange={setIsIncidentDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-compliblue hover:bg-compliblue/90">
+                        Nieuw incident melden
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Incident melden</DialogTitle>
+                        <DialogDescription>
+                          Registreer een nieuw incident in het systeem.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <AddIncidentForm
+                        onSuccess={() => setIsIncidentDialogOpen(false)}
+                        onCancel={() => setIsIncidentDialogOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </CardHeader>
                 <CardContent>
                   <div className="bg-white rounded-lg shadow border overflow-x-auto">
@@ -248,9 +318,25 @@ const SafetyManagement = () => {
                     <Calendar className="h-6 w-6 text-compliblue" />
                     <span>Oefeningen</span>
                   </CardTitle>
-                  <Button className="bg-compliblue hover:bg-compliblue/90">
-                    Nieuwe oefening registreren
-                  </Button>
+                  <Dialog open={isExerciseDialogOpen} onOpenChange={setIsExerciseDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-compliblue hover:bg-compliblue/90">
+                        Nieuwe oefening registreren
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Oefening registreren</DialogTitle>
+                        <DialogDescription>
+                          Plan een nieuwe veiligheidsoefening in.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <AddExerciseForm
+                        onSuccess={() => setIsExerciseDialogOpen(false)}
+                        onCancel={() => setIsExerciseDialogOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </CardHeader>
                 <CardContent>
                   <div className="bg-white rounded-lg shadow border overflow-x-auto">
