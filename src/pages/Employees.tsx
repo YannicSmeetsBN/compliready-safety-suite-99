@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -7,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { EmployeeSearchFilters } from "@/components/employees/EmployeeSearchFilters";
 import { EmployeeTable } from "@/components/employees/EmployeeTable";
-import { employees, departments } from "@/data/employeesData";
+import { employees, departments } from "@/data";
 
 const Employees = () => {
   const navigate = useNavigate();

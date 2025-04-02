@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -20,7 +19,7 @@ import {
   employeeTrainings, 
   employeeElearnings, 
   employeeNotes 
-} from "@/data/employeesData";
+} from "@/data";
 
 const EmployeeDetail = () => {
   const { employeeId } = useParams();
@@ -31,14 +30,12 @@ const EmployeeDetail = () => {
   console.log("Current employeeId from params:", employeeId);
   console.log("Available employee IDs:", employees.map(e => e.id));
 
-  // References for scrolling to sections
   const certificatesRef = useRef<HTMLDivElement>(null);
   const trainingsRef = useRef<HTMLDivElement>(null);
   const pbmsRef = useRef<HTMLDivElement>(null);
   const elearningsRef = useRef<HTMLDivElement>(null);
   const notesRef = useRef<HTMLDivElement>(null);
 
-  // Update the state to use separate boolean flags for each section
   const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
   const [isEditingCertificates, setIsEditingCertificates] = useState(false);
   const [isEditingPBM, setIsEditingPBM] = useState(false);
@@ -46,7 +43,6 @@ const EmployeeDetail = () => {
   const [isEditingElearnings, setIsEditingElearnings] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
-  // Find the employee based on the ID from the URL
   const employee = employees.find(emp => emp.id === employeeId);
   const certificates = employeeCertificates[employeeId] || [];
   const pbms = employeePBMs[employeeId] || [];
@@ -54,7 +50,6 @@ const EmployeeDetail = () => {
   const elearnings = employeeElearnings[employeeId] || [];
   const notes = employeeNotes[employeeId] || [];
 
-  // Handle hash navigation for scrolling to specific sections
   useEffect(() => {
     const hash = location.hash.replace('#', '');
     if (hash) {
@@ -85,7 +80,6 @@ const EmployeeDetail = () => {
     }
   }, [location.hash]);
 
-  // If employee not found
   if (!employee) {
     return (
       <div className="main-layout">
@@ -100,7 +94,6 @@ const EmployeeDetail = () => {
     );
   }
 
-  // Mock functions for CRUD operations
   const handleAdd = (section) => {
     toast({
       title: "Item toevoegen",
@@ -145,14 +138,12 @@ const EmployeeDetail = () => {
           </Button>
           
           <div className="flex flex-col gap-6">
-            {/* Persoonlijke gegevens */}
             <EmployeePersonalInfo 
               employee={employee} 
               isEditing={isEditingPersonalInfo}
               setIsEditing={setIsEditingPersonalInfo}
             />
             
-            {/* Certificaten */}
             <div ref={certificatesRef}>
               <EmployeeCertificates 
                 certificates={certificates}
@@ -163,7 +154,6 @@ const EmployeeDetail = () => {
               />
             </div>
             
-            {/* PBM's */}
             <div ref={pbmsRef}>
               <EmployeePBMs 
                 pbms={pbms}
@@ -173,7 +163,6 @@ const EmployeeDetail = () => {
               />
             </div>
             
-            {/* Trainingen */}
             <div ref={trainingsRef}>
               <EmployeeTrainings 
                 trainings={trainings}
@@ -183,7 +172,6 @@ const EmployeeDetail = () => {
               />
             </div>
             
-            {/* E-learnings */}
             <div ref={elearningsRef}>
               <EmployeeElearnings 
                 elearnings={elearnings}
@@ -193,7 +181,6 @@ const EmployeeDetail = () => {
               />
             </div>
             
-            {/* Notities */}
             <div ref={notesRef}>
               <EmployeeNotes 
                 notes={notes}

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -22,7 +21,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { employees } from "@/data/employeesData";
+import { employees } from "@/data";
 
 // Dummy data structuren voor mock data
 const ppeTypes = {
