@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -12,6 +13,12 @@ import { EmployeePBMs } from "@/components/employees/detail/EmployeePBMs";
 import { EmployeeTrainings } from "@/components/employees/detail/EmployeeTrainings";
 import { EmployeeElearnings } from "@/components/employees/detail/EmployeeElearnings";
 import { EmployeeNotes } from "@/components/employees/detail/EmployeeNotes";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { EditPersonalInfoForm } from "@/components/employees/detail/EditPersonalInfoForm";
+import { AddCertificateForm } from "@/components/employees/detail/AddCertificateForm";
+import { AddPBMForm } from "@/components/employees/detail/AddPBMForm";
+import { AddTrainingForm } from "@/components/employees/detail/AddTrainingForm";
+import { AddElearningForm } from "@/components/employees/detail/AddElearningForm";
 import { 
   employees, 
   employeeCertificates, 
@@ -36,19 +43,30 @@ const EmployeeDetail = () => {
   const elearningsRef = useRef<HTMLDivElement>(null);
   const notesRef = useRef<HTMLDivElement>(null);
 
-  const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
-  const [isEditingCertificates, setIsEditingCertificates] = useState(false);
-  const [isEditingPBM, setIsEditingPBM] = useState(false);
-  const [isEditingTrainings, setIsEditingTrainings] = useState(false);
-  const [isEditingElearnings, setIsEditingElearnings] = useState(false);
-  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  // Dialog state management
+  const [isPersonalInfoDialogOpen, setIsPersonalInfoDialogOpen] = useState(false);
+  const [isCertificateDialogOpen, setIsCertificateDialogOpen] = useState(false);
+  const [isPBMDialogOpen, setIsPBMDialogOpen] = useState(false);
+  const [isTrainingDialogOpen, setIsTrainingDialogOpen] = useState(false);
+  const [isElearningDialogOpen, setIsElearningDialogOpen] = useState(false);
 
-  const employee = employees.find(emp => emp.id === employeeId);
-  const certificates = employeeCertificates[employeeId] || [];
-  const pbms = employeePBMs[employeeId] || [];
-  const trainings = employeeTrainings[employeeId] || [];
-  const elearnings = employeeElearnings[employeeId] || [];
-  const notes = employeeNotes[employeeId] || [];
+  // Data states
+  const [employee, setEmployee] = useState(employees.find(emp => emp.id === employeeId));
+  const [certificates, setCertificates] = useState(employeeCertificates[employeeId] || []);
+  const [pbms, setPbms] = useState(employeePBMs[employeeId] || []);
+  const [trainings, setTrainings] = useState(employeeTrainings[employeeId] || []);
+  const [elearnings, setElearnings] = useState(employeeElearnings[employeeId] || []);
+  const [notes, setNotes] = useState(employeeNotes[employeeId] || []);
+
+  // Refresh data function
+  const refreshData = () => {
+    setEmployee(employees.find(emp => emp.id === employeeId));
+    setCertificates(employeeCertificates[employeeId] || []);
+    setPbms(employeePBMs[employeeId] || []);
+    setTrainings(employeeTrainings[employeeId] || []);
+    setElearnings(employeeElearnings[employeeId] || []);
+    setNotes(employeeNotes[employeeId] || []);
+  };
 
   useEffect(() => {
     const hash = location.hash.replace('#', '');
@@ -95,10 +113,26 @@ const EmployeeDetail = () => {
   }
 
   const handleAdd = (section) => {
-    toast({
-      title: "Item toevoegen",
-      description: `Functionaliteit om een nieuw ${section} item toe te voegen.`,
-    });
+    switch (section) {
+      case 'certificaat':
+        setIsCertificateDialogOpen(true);
+        break;
+      case 'PBM':
+        setIsPBMDialogOpen(true);
+        break;
+      case 'training':
+        setIsTrainingDialogOpen(true);
+        break;
+      case 'e-learning':
+        setIsElearningDialogOpen(true);
+        break;
+      default:
+        toast({
+          title: "Item toevoegen",
+          description: `Functionaliteit om een nieuw ${section} item toe te voegen.`,
+        });
+        break;
+    }
   };
 
   const handleEdit = (section, item) => {
@@ -140,8 +174,8 @@ const EmployeeDetail = () => {
           <div className="flex flex-col gap-6">
             <EmployeePersonalInfo 
               employee={employee} 
-              isEditing={isEditingPersonalInfo}
-              setIsEditing={setIsEditingPersonalInfo}
+              isEditing={false}
+              setIsEditing={() => setIsPersonalInfoDialogOpen(true)}
             />
             
             <div ref={certificatesRef}>
@@ -190,6 +224,91 @@ const EmployeeDetail = () => {
               />
             </div>
           </div>
+
+          {/* Edit Personal Info Dialog */}
+          <Dialog open={isPersonalInfoDialogOpen} onOpenChange={setIsPersonalInfoDialogOpen}>
+            <DialogContent className="sm:max-w-[700px]">
+              <DialogHeader>
+                <DialogTitle>Persoonlijke gegevens bewerken</DialogTitle>
+              </DialogHeader>
+              <EditPersonalInfoForm 
+                employee={employee}
+                onSuccess={() => {
+                  setIsPersonalInfoDialogOpen(false);
+                  refreshData();
+                }}
+                onCancel={() => setIsPersonalInfoDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* Add Certificate Dialog */}
+          <Dialog open={isCertificateDialogOpen} onOpenChange={setIsCertificateDialogOpen}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Certificaat toevoegen</DialogTitle>
+              </DialogHeader>
+              <AddCertificateForm 
+                employeeId={employeeId}
+                onSuccess={() => {
+                  setIsCertificateDialogOpen(false);
+                  refreshData();
+                }}
+                onCancel={() => setIsCertificateDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* Add PBM Dialog */}
+          <Dialog open={isPBMDialogOpen} onOpenChange={setIsPBMDialogOpen}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>PBM toevoegen</DialogTitle>
+              </DialogHeader>
+              <AddPBMForm 
+                employeeId={employeeId}
+                onSuccess={() => {
+                  setIsPBMDialogOpen(false);
+                  refreshData();
+                }}
+                onCancel={() => setIsPBMDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* Add Training Dialog */}
+          <Dialog open={isTrainingDialogOpen} onOpenChange={setIsTrainingDialogOpen}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Training plannen</DialogTitle>
+              </DialogHeader>
+              <AddTrainingForm 
+                employeeId={employeeId}
+                onSuccess={() => {
+                  setIsTrainingDialogOpen(false);
+                  refreshData();
+                }}
+                onCancel={() => setIsTrainingDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* Add E-learning Dialog */}
+          <Dialog open={isElearningDialogOpen} onOpenChange={setIsElearningDialogOpen}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>E-learning toewijzen</DialogTitle>
+              </DialogHeader>
+              <AddElearningForm 
+                employeeId={employeeId}
+                onSuccess={() => {
+                  setIsElearningDialogOpen(false);
+                  refreshData();
+                }}
+                onCancel={() => setIsElearningDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </div>
