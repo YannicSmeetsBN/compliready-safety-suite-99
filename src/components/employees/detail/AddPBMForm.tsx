@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { addPBMToEmployee } from "@/data/dataManager";
+import { Upload } from "lucide-react";
 
 interface AddPBMFormProps {
   employeeId: string;
@@ -23,12 +24,19 @@ export const AddPBMForm = ({
     expiryDate: "",
     status: "active",
   });
+  const [pbmFile, setPbmFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPbmFile(e.target.files[0]);
+    }
   };
 
   const formatDate = (dateString: string): string => {
@@ -109,6 +117,20 @@ export const AddPBMForm = ({
             onChange={handleInputChange}
             required
           />
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="pbmFile">Upload documentatie (PDF)</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="pbmFile"
+              name="pbmFile"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="flex-1"
+            />
+          </div>
         </div>
       </div>
 

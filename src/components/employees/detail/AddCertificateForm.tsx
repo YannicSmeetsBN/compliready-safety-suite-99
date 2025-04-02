@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { addCertificateToEmployee } from "@/data/dataManager";
+import { Upload } from "lucide-react";
 
 interface AddCertificateFormProps {
   employeeId: string;
@@ -25,12 +26,12 @@ export const AddCertificateForm = ({
   onCancel 
 }: AddCertificateFormProps) => {
   const [formData, setFormData] = useState({
-    name: "",
     type: "",
     issueDate: "",
     expiryDate: "",
     status: "active",
   });
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -41,6 +42,12 @@ export const AddCertificateForm = ({
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setCertificateFile(e.target.files[0]);
+    }
   };
 
   const formatDate = (dateString: string): string => {
@@ -58,8 +65,12 @@ export const AddCertificateForm = ({
     e.preventDefault();
     setSubmitting(true);
 
+    // Generate a name based on certificate type if no name is provided
+    const certificateName = `${formData.type} Certificaat`;
+
     // Format dates to DD-MM-YYYY
     const formattedData = {
+      name: certificateName,
       ...formData,
       issueDate: formatDate(formData.issueDate),
       expiryDate: formatDate(formData.expiryDate),
@@ -71,7 +82,7 @@ export const AddCertificateForm = ({
     if (success) {
       toast({
         title: "Certificaat toegevoegd",
-        description: `${formData.name} is succesvol toegevoegd.`,
+        description: `${certificateName} is succesvol toegevoegd.`,
       });
       onSuccess();
     } else {
@@ -87,18 +98,6 @@ export const AddCertificateForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 py-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Certificaat naam</Label>
-          <Input
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Bijv. BHV Certificaat"
-            required
-          />
-        </div>
-
         <div className="space-y-2">
           <Label htmlFor="type">Type certificaat</Label>
           <Select
@@ -118,6 +117,20 @@ export const AddCertificateForm = ({
               <SelectItem value="Anders">Anders</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="certificateFile">Upload certificaat (PDF)</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="certificateFile"
+              name="certificateFile"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="flex-1"
+            />
+          </div>
         </div>
 
         <div className="space-y-2">
