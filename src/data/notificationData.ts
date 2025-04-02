@@ -1,24 +1,23 @@
-
 // Employee notifications
 export const employeeCertificateNotifications = [
   {
     title: "BHV Certificaat - Jan Jansen",
-    date: "Verloopt over 30 dagen",
+    date: "Verloopt over 28 dagen",
     status: "warning" as const,
-    link: "/employees/1#trainings", // Gewijzigd van "jan-jansen" naar "1"
+    link: "/employees/1#trainings",
   }
 ];
 
 export const employeeExerciseNotifications = [
   {
     title: "BHV Oefening",
-    date: "Gepland op 15-07-2023",
+    date: "Gepland op 15-03-2025",
     status: "info" as const,
     link: "/safety?tab=exercises",
   },
   {
     title: "Ontruimingsoefening",
-    date: "Gepland op 22-07-2023",
+    date: "Gepland op 22-04-2025",
     status: "info" as const,
     link: "/safety?tab=exercises",
   }
@@ -27,13 +26,13 @@ export const employeeExerciseNotifications = [
 export const employeeIncidentNotifications = [
   {
     title: "Val van hoogte - Bouwplaats A",
-    date: "Gemeld op 05-07-2023",
+    date: "Gemeld op 05-02-2025",
     status: "danger" as const,
     link: "/safety?tab=incidents",
   },
   {
     title: "Bijna-ongeval - Magazijn",
-    date: "Gemeld op 12-07-2023",
+    date: "Gemeld op 12-02-2025",
     status: "warning" as const,
     link: "/safety?tab=incidents",
   }
@@ -43,21 +42,21 @@ export const employeeIncidentNotifications = [
 export const certificateNotifications = [
   {
     title: "BHV Certificaat - Jan Jansen",
-    date: "Verloopt over 30 dagen",
+    date: "Verloopt over 28 dagen",
     status: "warning" as const,
-    link: "/employees/1#trainings", // Gewijzigd van "jan-jansen" naar "1"
+    link: "/employees/1#trainings",
   },
   {
     title: "VCA Basis - Pieter Pietersen",
     date: "Verloopt over 14 dagen",
     status: "warning" as const,
-    link: "/employees/2#certificates", // Gewijzigd van "pieter-pietersen" naar "2"
+    link: "/employees/2#certificates",
   },
   {
     title: "EHBO Diploma - Maria Willemsen",
-    date: "Verlopen sinds 10-01-2023",
+    date: "Verlopen sinds 10-01-2025",
     status: "danger" as const,
-    link: "/employees/3#certificates", // Gewijzigd van "maria-willemsen" naar "3"
+    link: "/employees/3#certificates",
   },
 ];
 
@@ -70,13 +69,13 @@ export const safetyNotifications = [
   },
   {
     title: "Brandblusser - Magazijn",
-    date: "Keuring verlopen sinds 15-05-2023",
+    date: "Keuring verlopen sinds 15-01-2025",
     status: "danger" as const,
     link: "/safety?tab=equipment",
   },
   {
     title: "AED - Receptie",
-    date: "Keuring succesvol afgerond op 01-06-2023",
+    date: "Keuring succesvol afgerond op 01-02-2025",
     status: "success" as const,
     link: "/safety?tab=equipment",
   },
@@ -85,19 +84,19 @@ export const safetyNotifications = [
 export const exerciseNotifications = [
   {
     title: "BHV Oefening",
-    date: "Gepland op 15-07-2023",
+    date: "Gepland op 15-03-2025",
     status: "info" as const,
     link: "/safety?tab=exercises",
   },
   {
     title: "Ontruimingsoefening",
-    date: "Gepland op 22-07-2023",
+    date: "Gepland op 22-04-2025",
     status: "info" as const,
     link: "/safety?tab=exercises",
   },
   {
     title: "Brandoefening",
-    date: "Succesvol afgerond op 01-05-2023",
+    date: "Succesvol afgerond op 01-02-2025",
     status: "success" as const,
     link: "/safety?tab=exercises",
   },
@@ -106,25 +105,25 @@ export const exerciseNotifications = [
 export const incidentNotifications = [
   {
     title: "Val van hoogte - Bouwplaats A",
-    date: "Gemeld op 05-07-2023",
+    date: "Gemeld op 05-02-2025",
     status: "danger" as const,
     link: "/safety?tab=incidents",
   },
   {
     title: "Bijna-ongeval - Magazijn",
-    date: "Gemeld op 12-07-2023",
+    date: "Gemeld op 12-02-2025",
     status: "warning" as const,
     link: "/safety?tab=incidents",
   },
   {
     title: "Kleine snijwond - Werkplaats",
-    date: "Gemeld op 20-07-2023",
+    date: "Gemeld op 20-02-2025",
     status: "info" as const,
     link: "/safety?tab=incidents",
   },
 ];
 
-// Chart data
+// Chart data - Keeping values consistent with actual certificate counts
 export const certificateStatusData = [
   { name: "Actueel", value: 18, color: "#22c55e", filterValue: "active" },
   { name: "Bijna verlopen", value: 5, color: "#f97316", filterValue: "expiring" },
@@ -146,10 +145,9 @@ export const criticalRisks = [
 ];
 
 export const actionItems = [
-  { action: "BHV oefening inplannen", deadline: "20-08-2023", status: "open", link: "/safety?tab=exercises" },
-  { action: "AED training organiseren", deadline: "15-09-2023", status: "open", link: "/certificates?type=aed" },
-  { action: "RI&E actualiseren", deadline: "30-09-2023", status: "open", link: "/risk-assessment" },
-  { action: "Vluchtwegmarkering controle", deadline: "10-08-2023", status: "open", link: "/safety?tab=equipment" },
-  { action: "Klaas Klaassen gaat op 30-04-2025 uit dienst, zorg voor een vervangende BHV'er.", deadline: "30-03-2025", status: "open", link: "/employees/4", // Gewijzigd van "klaas-klaassen" naar "4"
-  },
+  { action: "BHV oefening inplannen", deadline: "20-03-2025", status: "open", link: "/safety?tab=exercises" },
+  { action: "AED training organiseren", deadline: "15-04-2025", status: "open", link: "/certificates?type=aed" },
+  { action: "RI&E actualiseren", deadline: "30-03-2025", status: "open", link: "/risk-assessment" },
+  { action: "Vluchtwegmarkering controle", deadline: "10-03-2025", status: "open", link: "/safety?tab=equipment" },
+  { action: "Klaas Klaassen gaat op 30-04-2025 uit dienst, zorg voor een vervangende BHV'er.", deadline: "30-03-2025", status: "open", link: "/employees/4" },
 ];

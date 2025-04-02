@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { BHVCoverageReport } from "./BHVCoverageReport";
 import { ComplianceScorecard } from "./ComplianceScorecard";
 import { TrainingPlanningReport } from "./TrainingPlanningReport";
+import { PartnerIntegrationFlow } from "./PartnerIntegrationFlow";
 
 interface ReportDetailProps {
   openReportDialog: string | null;
@@ -18,6 +19,8 @@ export const ReportDetail = ({ openReportDialog, onClose }: ReportDetailProps) =
         return <ComplianceScorecard />;
       case "training-planning":
         return <TrainingPlanningReport />;
+      case "partner-integration":
+        return <PartnerIntegrationFlow />;
       default:
         return null;
     }
@@ -27,7 +30,15 @@ export const ReportDetail = ({ openReportDialog, onClose }: ReportDetailProps) =
     if (openReportDialog === "bhv-coverage") return "BHV-dekking per locatie";
     if (openReportDialog === "compliance-scorecard") return "Compliance Scorecard";
     if (openReportDialog === "training-planning") return "Opleidingsplanning rapport";
+    if (openReportDialog === "partner-integration") return "Opleider Integratie Workflow";
     return "";
+  };
+
+  const getDescription = () => {
+    if (openReportDialog === "partner-integration") {
+      return "Demonstratie van de workflow voor certificaatkoppeling met opleiders";
+    }
+    return "Gedetailleerd overzicht van de rapportgegevens";
   };
 
   return (
@@ -36,7 +47,7 @@ export const ReportDetail = ({ openReportDialog, onClose }: ReportDetailProps) =
         <DialogHeader>
           <DialogTitle>{getTitle()}</DialogTitle>
           <DialogDescription>
-            Gedetailleerd overzicht van de rapportgegevens
+            {getDescription()}
           </DialogDescription>
         </DialogHeader>
         {renderReportDetail()}

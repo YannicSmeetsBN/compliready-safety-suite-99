@@ -17,11 +17,12 @@ export interface ReportCardProps {
   type: string;
   icon: ReactNode;
   onViewClick: (reportId: string) => void;
+  isDemo?: boolean;
 }
 
-export const ReportCard = ({ id, title, description, updated, type, icon, onViewClick }: ReportCardProps) => {
+export const ReportCard = ({ id, title, description, updated, type, icon, onViewClick, isDemo = false }: ReportCardProps) => {
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className={`hover:shadow-md transition-shadow ${isDemo ? 'border-2 border-blue-300' : ''}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{title}</CardTitle>
@@ -31,6 +32,11 @@ export const ReportCard = ({ id, title, description, updated, type, icon, onView
       </CardHeader>
       <CardContent>
         <p className="text-xs text-gray-500">{updated}</p>
+        {isDemo && (
+          <div className="mt-2 inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-800">
+            Demo functionaliteit
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         <div className="flex gap-2 w-full">
