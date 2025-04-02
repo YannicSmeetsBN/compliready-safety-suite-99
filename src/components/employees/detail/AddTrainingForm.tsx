@@ -306,6 +306,26 @@ export const AddTrainingForm = ({
     return `${day}-${month}-${year}`;
   };
 
+  const handleSelectSession = (session: any) => {
+    setSelectedDate(session.date);
+    setSelectedSession(session);
+    
+    const selectedTraining = trainingTypes.find(t => t.id === selectedTrainingType);
+    const providerData = trainingProviders[selectedTrainingType]?.find(p => p.id === selectedProvider);
+    
+    if (selectedTraining && providerData) {
+      setFormData({
+        name: `${selectedTraining.name} (${providerData.name})`,
+        date: format(session.date, 'yyyy-MM-dd'),
+        status: "planned",
+        provider: providerData.name,
+        time: session.time,
+        location: session.location,
+        trainer: session.trainer
+      });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -444,8 +464,8 @@ export const AddTrainingForm = ({
                     return (
                       <TableRow 
                         key={index}
-                        className={isSelected ? "bg-blue-50" : ""}
-                        onClick={() => setSelectedDate(session.date)}
+                        className={isSelected ? "bg-blue-50" : "hover:bg-blue-50/50 cursor-pointer"}
+                        onClick={() => handleSelectSession(session)}
                       >
                         <TableCell>
                           {trainingTypes.find(t => t.id === selectedTrainingType)?.name}
