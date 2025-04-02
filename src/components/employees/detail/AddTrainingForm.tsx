@@ -15,10 +15,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell
+} from "@/components/ui/table";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { addTrainingToEmployee } from "@/data/dataManager";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Check } from "lucide-react";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 
@@ -399,6 +407,7 @@ export const AddTrainingForm = ({
                     d.getDate() === date.getDate()
                   )}
                   initialFocus
+                  className="p-3 pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
@@ -410,33 +419,78 @@ export const AddTrainingForm = ({
           </div>
         )}
 
+        {selectedProvider !== null && availableTrainingSessions.length > 0 && (
+          <div className="border rounded-md p-4 bg-gray-50 mt-4">
+            <h3 className="font-medium mb-3">Beschikbare trainingen:</h3>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Training</TableHead>
+                    <TableHead>Datum</TableHead>
+                    <TableHead>Tijd</TableHead>
+                    <TableHead>Locatie</TableHead>
+                    <TableHead>Trainer</TableHead>
+                    <TableHead>Keuze</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {availableTrainingSessions.map((session, index) => {
+                    const isSelected = selectedDate && 
+                      session.date.getFullYear() === selectedDate.getFullYear() &&
+                      session.date.getMonth() === selectedDate.getMonth() &&
+                      session.date.getDate() === selectedDate.getDate();
+                    
+                    return (
+                      <TableRow 
+                        key={index}
+                        className={isSelected ? "bg-blue-50" : ""}
+                        onClick={() => setSelectedDate(session.date)}
+                      >
+                        <TableCell>
+                          {trainingTypes.find(t => t.id === selectedTrainingType)?.name}
+                        </TableCell>
+                        <TableCell>
+                          {format(session.date, "d MMMM yyyy", { locale: nl })}
+                        </TableCell>
+                        <TableCell>{session.time}</TableCell>
+                        <TableCell>{session.location}</TableCell>
+                        <TableCell>{session.trainer}</TableCell>
+                        <TableCell>
+                          {isSelected && (
+                            <div className="rounded-full bg-green-100 w-7 h-7 flex items-center justify-center">
+                              <Check className="h-4 w-4 text-green-600" />
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+            <p className="text-sm mt-3 text-gray-600">
+              Klik op een rij om deze training te selecteren
+            </p>
+          </div>
+        )}
+
         {selectedSession && (
-          <div className="mt-4 border rounded-md p-4 bg-gray-50">
+          <div className="mt-4 border rounded-md p-4 bg-blue-50">
             <h3 className="font-medium mb-2">Geselecteerde trainingsessie:</h3>
-            <table className="w-full text-sm">
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Training:</td>
-                  <td className="py-2">{formData.name}</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Datum:</td>
-                  <td className="py-2">{selectedDate ? format(selectedDate, "d MMMM yyyy", { locale: nl }) : ""}</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Tijd:</td>
-                  <td className="py-2">{selectedSession.time}</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Locatie:</td>
-                  <td className="py-2">{selectedSession.location}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 font-semibold">Trainer:</td>
-                  <td className="py-2">{selectedSession.trainer}</td>
-                </tr>
-              </tbody>
-            </table>
+            <p className="font-bold">{formData.name}</p>
+            <p className="text-sm">
+              <span className="font-semibold">Datum:</span> {selectedDate ? format(selectedDate, "d MMMM yyyy", { locale: nl }) : ""}
+            </p>
+            <p className="text-sm">
+              <span className="font-semibold">Tijd:</span> {selectedSession.time}
+            </p>
+            <p className="text-sm">
+              <span className="font-semibold">Locatie:</span> {selectedSession.location}
+            </p>
+            <p className="text-sm">
+              <span className="font-semibold">Trainer:</span> {selectedSession.trainer}
+            </p>
             <p className="text-sm mt-3 text-gray-600">
               Nog {selectedSession.spotsLeft} plaats(en) beschikbaar
             </p>
