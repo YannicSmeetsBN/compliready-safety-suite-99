@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -13,32 +12,10 @@ import {
   FileText, 
   Bell, 
   Users, 
-  Link2 
+  Link2,
+  LayoutGrid
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { ModulesTab } from "@/components/settings/ModulesTab";
 
 // Demo certificaat types
 const certificateTypes = [
@@ -103,7 +80,7 @@ const Settings = () => {
           <h1 className="page-title">Instellingen</h1>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-4 mb-8">
+            <TabsList className="grid grid-cols-5 mb-8">
               <TabsTrigger value="certificates" className="flex items-center gap-2">
                 <FileText size={16} />
                 <span>Certificaten</span>
@@ -119,6 +96,10 @@ const Settings = () => {
               <TabsTrigger value="integrations" className="flex items-center gap-2">
                 <Link2 size={16} />
                 <span>Koppelingen</span>
+              </TabsTrigger>
+              <TabsTrigger value="modules" className="flex items-center gap-2">
+                <LayoutGrid size={16} />
+                <span>Modules</span>
               </TabsTrigger>
             </TabsList>
             
@@ -421,6 +402,10 @@ const Settings = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="modules" className="space-y-6">
+              <ModulesTab />
             </TabsContent>
           </Tabs>
         </main>

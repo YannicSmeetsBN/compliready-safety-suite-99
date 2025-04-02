@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useModules } from "@/contexts/ModulesContext";
 import { 
   Home, 
   Users, 
@@ -45,6 +46,7 @@ export const Sidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const { userRole } = useAuth();
+  const { isModuleEnabled } = useModules();
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -94,7 +96,7 @@ export const Sidebar = () => {
           label="Certificaten" 
           to="/certificates" 
           active={isActive("/certificates")} 
-          hidden={!isEmployer}
+          hidden={!isEmployer || !isModuleEnabled("certificates")}
         />
         
         {/* Safety - visible to employers only */}
@@ -103,7 +105,7 @@ export const Sidebar = () => {
           label="Veiligheidsbeheer" 
           to="/safety" 
           active={isActive("/safety")} 
-          hidden={!isEmployer}
+          hidden={!isEmployer || !isModuleEnabled("safety")}
         />
         
         {/* Document Management (previously Risk Assessment) - visible to employers only */}
@@ -112,7 +114,7 @@ export const Sidebar = () => {
           label="Documentbeheer" 
           to="/document-management" 
           active={isActive("/document-management") || isActive("/risk-assessment")} 
-          hidden={!isEmployer}
+          hidden={!isEmployer || !isModuleEnabled("documents")}
         />
         
         {/* Tachograph - visible to employers only */}
@@ -121,7 +123,7 @@ export const Sidebar = () => {
           label="Tachograaf" 
           to="/tachograph" 
           active={isActive("/tachograph")} 
-          hidden={!isEmployer}
+          hidden={!isEmployer || !isModuleEnabled("tachograph")}
         />
         
         {/* Emergency Call - visible to employees and employers */}
@@ -130,7 +132,7 @@ export const Sidebar = () => {
           label="BHV-Oproep" 
           to="/emergency-call" 
           active={isActive("/emergency-call")} 
-          hidden={isTrainer}
+          hidden={isTrainer || !isModuleEnabled("emergency")}
         />
         
         {/* Reports - visible to employers only */}
