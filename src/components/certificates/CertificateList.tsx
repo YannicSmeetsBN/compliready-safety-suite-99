@@ -85,6 +85,7 @@ export const CertificateList = ({ isCompany = false }: CertificateListProps) => 
                 sortConfig={sortConfig}
                 hasFilter={true}
                 filterItems={uniqueTypes}
+                activeFilter={typeFilter}
                 onSort={handleSort}
                 onFilter={setTypeFilter}
               />
@@ -106,6 +107,7 @@ export const CertificateList = ({ isCompany = false }: CertificateListProps) => 
                 sortConfig={sortConfig}
                 hasFilter={true}
                 filterItems={["active", "expiring", "expired"]}
+                activeFilter={statusFilter}
                 onSort={handleSort}
                 onFilter={(value) => setStatusFilter(value as Certificate["status"] | null)}
               />
