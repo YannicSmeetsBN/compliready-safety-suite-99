@@ -1,5 +1,4 @@
-
-import { Certificate, SortConfig } from "./types";
+import { Certificate, SortConfig, SortDirection } from "./types";
 
 // Apply filters to certificates
 export const filterCertificates = (
