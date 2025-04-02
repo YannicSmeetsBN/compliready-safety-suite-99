@@ -2,12 +2,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, CheckCircle, FileText, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 type DashboardProps = {
   risks: any[];
 };
 
 export const Dashboard = ({ risks }: DashboardProps) => {
+  const navigate = useNavigate();
+  
   // Calculate dashboard metrics
   const totalRisks = risks.length;
   const pendingMeasures = risks.filter(risk => 
@@ -36,13 +39,19 @@ export const Dashboard = ({ risks }: DashboardProps) => {
     averageScore: data.count > 0 ? data.total / data.count : 0
   })).sort((a, b) => b.averageScore - a.averageScore);
 
+  // Navigate to department details
+  const handleDepartmentClick = (department: string) => {
+    // Navigate to the department filtered view
+    navigate(`/risk-assessment?department=${department}`);
+  };
+
   return (
     <div className="mb-8">
       <h2 className="text-xl font-semibold mb-4">RI&E Dashboard</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {/* Total risks */}
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/risk-assessment")}>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center">
               <div>
@@ -57,7 +66,7 @@ export const Dashboard = ({ risks }: DashboardProps) => {
         </Card>
         
         {/* Pending measures */}
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/risk-assessment?status=open")}>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center">
               <div>
@@ -72,7 +81,7 @@ export const Dashboard = ({ risks }: DashboardProps) => {
         </Card>
         
         {/* High priority risks */}
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/risk-assessment?priority=high")}>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center">
               <div>
@@ -87,7 +96,7 @@ export const Dashboard = ({ risks }: DashboardProps) => {
         </Card>
         
         {/* Completion percentage */}
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/risk-assessment?status=completed")}>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center">
               <div>
@@ -115,7 +124,11 @@ export const Dashboard = ({ risks }: DashboardProps) => {
           <CardContent>
             <div className="space-y-4">
               {departmentAverages.map(dept => (
-                <div key={dept.department} className="flex items-center">
+                <div 
+                  key={dept.department} 
+                  className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => handleDepartmentClick(dept.department)}
+                >
                   <span className="w-1/3 font-medium">{dept.department}</span>
                   <div className="w-2/3 flex items-center gap-3">
                     <div className="w-full bg-gray-200 rounded-full h-2.5">

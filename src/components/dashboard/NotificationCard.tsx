@@ -34,16 +34,21 @@ type NotificationCardProps = {
   icon?: ReactNode;
   notifications: NotificationItemProps[];
   viewAllLink: string;
+  onClick?: () => void;
 };
 
 export const NotificationCard = ({ 
   title, 
   icon, 
   notifications, 
-  viewAllLink 
+  viewAllLink,
+  onClick
 }: NotificationCardProps) => {
   return (
-    <div className="dashboard-card dashboard-notification-card">
+    <div 
+      className={`dashboard-card dashboard-notification-card ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-center gap-2 mb-4">
         {icon && <div className="text-compliblue">{icon}</div>}
         <h3 className="card-header">{title}</h3>

@@ -6,6 +6,7 @@ import { NotificationCard } from "@/components/dashboard/NotificationCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
+import { StatCard } from "@/components/dashboard/StatCard";
 import { 
   FileText, 
   Users, 
@@ -15,22 +16,24 @@ import {
   ChevronRight,
   Activity
 } from "lucide-react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Sector } from "recharts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userRole, userName, userLocation } = useAuth();
+  const [locationFilter, setLocationFilter] = useState('all');
+  const [activeIndex, setActiveIndex] = useState(null);
   
   const certificateStatusData = [
-    { name: "Actueel", value: 18, color: "#22c55e" },
-    { name: "Bijna verlopen", value: 5, color: "#f97316" },
-    { name: "Verlopen", value: 3, color: "#ef4444" },
+    { name: "Actueel", value: 18, color: "#22c55e", filterValue: "current" },
+    { name: "Bijna verlopen", value: 5, color: "#f97316", filterValue: "expiring" },
+    { name: "Verlopen", value: 3, color: "#ef4444", filterValue: "expired" },
   ];
 
   const equipmentStatusData = [
-    { name: "Actueel", value: 24, color: "#22c55e" },
-    { name: "Bijna verlopen", value: 8, color: "#f97316" },
-    { name: "Verlopen", value: 2, color: "#ef4444" },
+    { name: "Actueel", value: 24, color: "#22c55e", filterValue: "current" },
+    { name: "Bijna verlopen", value: 8, color: "#f97316", filterValue: "expiring" },
+    { name: "Verlopen", value: 2, color: "#ef4444", filterValue: "expired" },
   ];
 
   const employeeCertificateNotifications = [
@@ -140,17 +143,18 @@ const Dashboard = () => {
   ];
 
   const criticalRisks = [
-    { risk: "Ontbrekende blusmiddelen bij magazijn", severity: "high" },
-    { risk: "Verlopen BHV-certificaten (3)", severity: "high" },
-    { risk: "Geen RI&E voor nieuwe productielijn", severity: "medium" },
-    { risk: "Verlichting nooduitgang defect", severity: "medium" },
+    { risk: "Ontbrekende blusmiddelen bij magazijn", severity: "high", link: "/safety?tab=equipment" },
+    { risk: "Verlopen BHV-certificaten (3)", severity: "high", link: "/certificates?status=expired&type=bhv" },
+    { risk: "Geen RI&E voor nieuwe productielijn", severity: "medium", link: "/risk-assessment" },
+    { risk: "Verlichting nooduitgang defect", severity: "medium", link: "/safety?tab=incidents" },
   ];
 
   const actionItems = [
-    { action: "BHV oefening inplannen", deadline: "20-08-2023", status: "open" },
-    { action: "AED training organiseren", deadline: "15-09-2023", status: "open" },
-    { action: "RI&E actualiseren", deadline: "30-09-2023", status: "open" },
-    { action: "Vluchtwegmarkering controle", deadline: "10-08-2023", status: "open" },
+    { action: "BHV oefening inplannen", deadline: "20-08-2023", status: "open", link: "/safety?tab=exercises" },
+    { action: "AED training organiseren", deadline: "15-09-2023", status: "open", link: "/certificates?type=aed" },
+    { action: "RI&E actualiseren", deadline: "30-09-2023", status: "open", link: "/risk-assessment" },
+    { action: "Vluchtwegmarkering controle", deadline: "10-08-2023", status: "open", link: "/safety?tab=equipment" },
+    { action: "Klaas Klaassen gaat op 30-04-2025 uit dienst, zorg voor een vervangende BHV'er.", deadline: "30-03-2025", status: "open", link: "/employees/klaas-klaassen" },
   ];
 
   const complianceScore = 78;
@@ -159,6 +163,40 @@ const Dashboard = () => {
     if (score >= 80) return "bg-green-100 text-green-600";
     if (score >= 60) return "bg-orange-100 text-orange-600";
     return "bg-red-100 text-red-600";
+  };
+
+  const handleCertificateClick = (data: any, index: number) => {
+    navigate(`/certificates?status=${data.filterValue}`);
+  };
+
+  const handleEquipmentClick = (data: any, index: number) => {
+    navigate(`/safety?tab=pbm&status=${data.filterValue}`);
+  };
+
+  const renderActiveShape = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+    
+    return (
+      <g>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 5}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+      </g>
+    );
+  };
+
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
+  };
+  
+  const onPieLeave = () => {
+    setActiveIndex(null);
   };
 
   const renderEmployeeDashboard = () => (
@@ -255,7 +293,7 @@ const Dashboard = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <div className="lg:col-span-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle>Certificaten Status</CardTitle>
             </CardHeader>
@@ -263,6 +301,8 @@ const Dashboard = () => {
               <div className="h-56 flex justify-center">
                 <PieChart width={200} height={200}>
                   <Pie
+                    activeIndex={activeIndex}
+                    activeShape={renderActiveShape}
                     data={certificateStatusData}
                     cx="50%"
                     cy="50%"
@@ -271,24 +311,31 @@ const Dashboard = () => {
                     paddingAngle={2}
                     dataKey="value"
                     labelLine={false}
+                    onClick={handleCertificateClick}
+                    onMouseEnter={onPieEnter}
+                    onMouseLeave={onPieLeave}
+                    style={{ cursor: 'pointer' }}
                   >
                     {certificateStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.color} 
+                      />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => [`${value} certificaten`, 'Aantal']} />
                 </PieChart>
               </div>
               <div className="flex justify-around text-xs text-center mt-2">
-                <div>
+                <div onClick={() => handleCertificateClick(certificateStatusData[0], 0)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
                   <p>Actueel</p>
                 </div>
-                <div>
+                <div onClick={() => handleCertificateClick(certificateStatusData[1], 1)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
                   <p>Bijna verlopen</p>
                 </div>
-                <div>
+                <div onClick={() => handleCertificateClick(certificateStatusData[2], 2)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
                   <p>Verlopen</p>
                 </div>
@@ -296,7 +343,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle>Veiligheidsmiddelen Status</CardTitle>
             </CardHeader>
@@ -304,6 +351,8 @@ const Dashboard = () => {
               <div className="h-56 flex justify-center">
                 <PieChart width={200} height={200}>
                   <Pie
+                    activeIndex={activeIndex}
+                    activeShape={renderActiveShape}
                     data={equipmentStatusData}
                     cx="50%"
                     cy="50%"
@@ -312,6 +361,10 @@ const Dashboard = () => {
                     paddingAngle={2}
                     dataKey="value"
                     labelLine={false}
+                    onClick={handleEquipmentClick}
+                    onMouseEnter={onPieEnter}
+                    onMouseLeave={onPieLeave}
+                    style={{ cursor: 'pointer' }}
                   >
                     {equipmentStatusData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -321,15 +374,15 @@ const Dashboard = () => {
                 </PieChart>
               </div>
               <div className="flex justify-around text-xs text-center mt-2">
-                <div>
+                <div onClick={() => handleEquipmentClick(equipmentStatusData[0], 0)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
                   <p>Actueel</p>
                 </div>
-                <div>
+                <div onClick={() => handleEquipmentClick(equipmentStatusData[1], 1)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
                   <p>Bijna verlopen</p>
                 </div>
-                <div>
+                <div onClick={() => handleEquipmentClick(equipmentStatusData[2], 2)} className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
                   <p>Verlopen</p>
                 </div>
@@ -346,12 +399,14 @@ const Dashboard = () => {
               icon={<FileText size={20} />}
               notifications={certificateNotifications}
               viewAllLink="/certificates"
+              onClick={() => navigate("/certificates")}
             />
             <NotificationCard
               title="Veiligheidsmiddelen & PBM's"
               icon={<Shield size={20} />}
               notifications={safetyNotifications}
               viewAllLink="/safety?tab=pbm"
+              onClick={() => navigate("/safety?tab=pbm")}
             />
           </div>
 
@@ -361,12 +416,14 @@ const Dashboard = () => {
               icon={<Calendar size={20} />}
               notifications={exerciseNotifications}
               viewAllLink="/safety?tab=exercises"
+              onClick={() => navigate("/safety?tab=exercises")}
             />
             <NotificationCard
               title="Recente incidenten"
               icon={<Bell size={20} />}
               notifications={incidentNotifications}
               viewAllLink="/safety?tab=incidents"
+              onClick={() => navigate("/safety?tab=incidents")}
             />
           </div>
         </div>
@@ -398,7 +455,11 @@ const Dashboard = () => {
             <CardContent>
               <ul className="space-y-2">
                 {criticalRisks.map((risk, index) => (
-                  <li key={index} className="flex items-start gap-2">
+                  <li 
+                    key={index} 
+                    className="flex items-start gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                    onClick={() => navigate(risk.link)}
+                  >
                     <div className={`mt-1 h-2 w-2 rounded-full ${
                       risk.severity === "high" ? "bg-red-500" : "bg-red-400"
                     }`} />
@@ -416,7 +477,11 @@ const Dashboard = () => {
             <CardContent>
               <ul className="space-y-2">
                 {actionItems.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
+                  <li 
+                    key={index} 
+                    className="flex items-start gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                    onClick={() => navigate(item.link)}
+                  >
                     <div className="mt-1 h-2 w-2 rounded-full bg-orange-500" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{item.action}</p>
@@ -444,25 +509,15 @@ const Dashboard = () => {
             
             {userRole === "employer" && (
               <div className="flex items-center gap-3">
-                <select className="px-3 py-2 border rounded text-sm">
-                  <option>Alle werkgevers</option>
-                  <option>Werkgever A</option>
-                  <option>Werkgever B</option>
-                </select>
-                <select className="px-3 py-2 border rounded text-sm">
-                  <option>Alle locaties</option>
-                  <option>Hoofdkantoor</option>
-                  <option>Productie</option>
-                </select>
-                <select className="px-3 py-2 border rounded text-sm">
-                  <option>Alle afdelingen</option>
-                  <option>Administratie</option>
-                  <option>Logistiek</option>
-                </select>
-                <select className="px-3 py-2 border rounded text-sm">
-                  <option>Laatste 30 dagen</option>
-                  <option>Dit kwartaal</option>
-                  <option>Dit jaar</option>
+                <select 
+                  className="px-3 py-2 border rounded text-sm"
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                >
+                  <option value="all">Alle locaties</option>
+                  <option value="hoofdkantoor">Hoofdkantoor</option>
+                  <option value="productie">Productie</option>
+                  <option value="magazijn">Magazijn</option>
                 </select>
               </div>
             )}
