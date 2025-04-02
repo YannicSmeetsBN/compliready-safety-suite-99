@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { FileText, Edit, Trash, Plus, Search } from "lucide-react";
+import { FileText, Edit, Trash, Plus, Search, ArrowUp, ArrowDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -17,6 +17,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CertificateForm } from "./CertificateForm";
 import { Input } from "@/components/ui/input";
 
@@ -30,8 +37,18 @@ type Certificate = {
   status: "active" | "expiring" | "expired";
 };
 
+type SortDirection = "asc" | "desc" | null;
+
+type SortConfig = {
+  key: keyof Certificate | null;
+  direction: SortDirection;
+};
+
 export const CertificateList = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<Certificate["status"] | null>(null);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: null });
   
   // Demo data
   const certificates: Certificate[] = [
@@ -82,11 +99,50 @@ export const CertificateList = () => {
     },
   ];
 
-  const filteredCertificates = certificates.filter((cert) =>
-    cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cert.employee.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cert.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get unique certificate types for filter
+  const uniqueTypes = Array.from(new Set(certificates.map(cert => cert.type)));
+
+  // Handle sorting when double-clicking on a column header
+  const handleSort = (key: keyof Certificate) => {
+    let direction: SortDirection = 'asc';
+    
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === 'asc') {
+        direction = 'desc';
+      } else if (sortConfig.direction === 'desc') {
+        direction = null;
+      }
+    }
+    
+    setSortConfig({ key, direction });
+  };
+
+  // Apply filters and sorting to the certificates
+  let filteredCertificates = certificates.filter((cert) => {
+    const matchesSearch = cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cert.employee.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cert.type.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesType = typeFilter ? cert.type === typeFilter : true;
+    const matchesStatus = statusFilter ? cert.status === statusFilter : true;
+    
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
+  // Apply sorting if a sort configuration exists
+  if (sortConfig.key && sortConfig.direction) {
+    filteredCertificates = [...filteredCertificates].sort((a, b) => {
+      const key = sortConfig.key as keyof Certificate;
+      
+      if (a[key] < b[key]) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (a[key] > b[key]) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
 
   const getStatusBadge = (status: Certificate["status"]) => {
     switch (status) {
@@ -99,6 +155,76 @@ export const CertificateList = () => {
       default:
         return null;
     }
+  };
+
+  const getSortIcon = (key: keyof Certificate) => {
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === 'asc') {
+        return <ArrowUp className="ml-1 h-4 w-4 inline" />;
+      } else if (sortConfig.direction === 'desc') {
+        return <ArrowDown className="ml-1 h-4 w-4 inline" />;
+      }
+    }
+    return null;
+  };
+
+  // Render a table header with sort and filter functionality
+  const renderTableHead = (
+    label: string, 
+    key: keyof Certificate, 
+    hasFilter: boolean = false,
+    filterItems?: string[] | Certificate["status"][]
+  ) => {
+    return (
+      <TableHead 
+        className="cursor-pointer select-none" 
+        onDoubleClick={() => handleSort(key)}
+      >
+        <div className="flex items-center">
+          <span>{label}</span>
+          {getSortIcon(key)}
+          
+          {hasFilter && filterItems && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-6 w-6 ml-1">
+                  <ChevronDown size={14} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (key === 'type') setTypeFilter(null);
+                      if (key === 'status') setStatusFilter(null);
+                    }}
+                  >
+                    Alle
+                  </DropdownMenuItem>
+                  {filterItems.map((item) => (
+                    <DropdownMenuItem 
+                      key={item} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (key === 'type') setTypeFilter(item as string);
+                        if (key === 'status') setStatusFilter(item as Certificate["status"]);
+                      }}
+                    >
+                      {key === 'status' ? 
+                        (item === 'active' ? 'Actueel' : 
+                         item === 'expiring' ? 'Verloopt binnenkort' : 
+                         'Verlopen') : 
+                        item}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </TableHead>
+    );
   };
 
   return (
@@ -134,12 +260,12 @@ export const CertificateList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Certificaat</TableHead>
-              <TableHead>Medewerker</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Uitgiftedatum</TableHead>
-              <TableHead>Vervaldatum</TableHead>
-              <TableHead>Status</TableHead>
+              {renderTableHead("Certificaat", "name")}
+              {renderTableHead("Medewerker", "employee")}
+              {renderTableHead("Type", "type", true, uniqueTypes)}
+              {renderTableHead("Uitgiftedatum", "issueDate")}
+              {renderTableHead("Vervaldatum", "expiryDate")}
+              {renderTableHead("Status", "status", true, ["active", "expiring", "expired"])}
               <TableHead className="text-right">Acties</TableHead>
             </TableRow>
           </TableHeader>
