@@ -178,7 +178,7 @@ export const CertificateList = () => {
     return (
       <TableHead 
         className="cursor-pointer select-none" 
-        onDoubleClick={() => handleSort(key)}
+        onClick={() => handleSort(key)}
       >
         <div className="flex items-center">
           <span>{label}</span>
