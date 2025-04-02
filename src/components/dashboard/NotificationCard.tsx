@@ -1,76 +1,94 @@
 
 import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
-type NotificationItemProps = {
+type NotificationStatus = "success" | "info" | "warning" | "danger";
+
+type NotificationItem = {
   title: string;
   date: string;
-  status: "warning" | "danger" | "success" | "info";
-};
-
-const NotificationItem = ({ title, date, status }: NotificationItemProps) => {
-  const statusBadge = {
-    warning: <span className="badge-warning">Binnenkort</span>,
-    danger: <span className="badge-danger">Verlopen</span>,
-    success: <span className="badge-success">Actueel</span>,
-    info: <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Info</span>,
-  };
-
-  return (
-    <div className="list-item">
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="font-medium">{title}</p>
-          <p className="text-sm text-gray-500">{date}</p>
-        </div>
-        <div>{statusBadge[status]}</div>
-      </div>
-    </div>
-  );
+  status: NotificationStatus;
+  link?: string;
 };
 
 type NotificationCardProps = {
   title: string;
-  icon?: ReactNode;
-  notifications: NotificationItemProps[];
+  icon: ReactNode;
+  notifications: NotificationItem[];
   viewAllLink: string;
-  onClick?: () => void;
+  onClick?: (link?: string) => void;
 };
 
-export const NotificationCard = ({ 
-  title, 
-  icon, 
-  notifications, 
+export const NotificationCard = ({
+  title,
+  icon,
+  notifications,
   viewAllLink,
-  onClick
+  onClick,
 }: NotificationCardProps) => {
+  const navigate = useNavigate();
+  
+  const getStatusColor = (status: NotificationStatus) => {
+    switch (status) {
+      case "success":
+        return "bg-green-500";
+      case "info":
+        return "bg-blue-500";
+      case "warning":
+        return "bg-orange-500";
+      case "danger":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const handleNotificationClick = (notification: NotificationItem) => {
+    if (onClick && notification.link) {
+      onClick(notification.link);
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
   return (
-    <div 
-      className={`dashboard-card dashboard-notification-card ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
-      onClick={onClick}
-    >
-      <div className="flex items-center gap-2 mb-4">
-        {icon && <div className="text-compliblue">{icon}</div>}
-        <h3 className="card-header">{title}</h3>
-      </div>
-      
-      <div className="card-content">
-        {notifications.length > 0 ? (
-          <div className="space-y-1">
-            {notifications.map((notification, index) => (
-              <NotificationItem key={index} {...notification} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500 text-center py-4">Geen notificaties gevonden.</p>
-        )}
-      </div>
-      
-      <div className="card-footer">
-        <Button asChild variant="outline" size="sm">
-          <a href={viewAllLink}>Bekijk alles</a>
-        </Button>
-      </div>
-    </div>
+    <Card>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+        <CardTitle className="text-base font-semibold flex items-center">
+          <span className="mr-2">{icon}</span>
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {notifications.map((notification, index) => (
+            <div 
+              key={index} 
+              className="flex items-start gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+              onClick={() => handleNotificationClick(notification)}
+            >
+              <div
+                className={`mt-1 h-2 w-2 rounded-full ${getStatusColor(
+                  notification.status
+                )}`}
+              />
+              <div className="flex-1">
+                <p className="text-sm font-medium">{notification.title}</p>
+                <p className="text-xs text-muted-foreground">{notification.date}</p>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+          ))}
+        </div>
+        <button
+          className="mt-4 text-sm text-compliblue hover:underline w-full text-right"
+          onClick={() => navigate(viewAllLink)}
+        >
+          Bekijk alles
+        </button>
+      </CardContent>
+    </Card>
   );
 };

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -25,7 +26,7 @@ const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   
   const certificateStatusData = [
-    { name: "Actueel", value: 18, color: "#22c55e", filterValue: "current" },
+    { name: "Actueel", value: 18, color: "#22c55e", filterValue: "active" },
     { name: "Bijna verlopen", value: 5, color: "#f97316", filterValue: "expiring" },
     { name: "Verlopen", value: 3, color: "#ef4444", filterValue: "expired" },
   ];
@@ -171,6 +172,10 @@ const Dashboard = () => {
 
   const handleEquipmentClick = (data: any, index: number) => {
     navigate(`/safety?tab=pbm&status=${data.filterValue}`);
+  };
+
+  const handleNotificationClick = (link: string) => {
+    navigate(link);
   };
 
   const renderActiveShape = (props: any) => {
@@ -343,7 +348,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/safety?tab=pbm")}>
             <CardHeader className="pb-2">
               <CardTitle>Veiligheidsmiddelen Status</CardTitle>
             </CardHeader>
@@ -351,8 +356,6 @@ const Dashboard = () => {
               <div className="h-56 flex justify-center">
                 <PieChart width={200} height={200}>
                   <Pie
-                    activeIndex={activeIndex}
-                    activeShape={renderActiveShape}
                     data={equipmentStatusData}
                     cx="50%"
                     cy="50%"
@@ -361,9 +364,6 @@ const Dashboard = () => {
                     paddingAngle={2}
                     dataKey="value"
                     labelLine={false}
-                    onClick={handleEquipmentClick}
-                    onMouseEnter={onPieEnter}
-                    onMouseLeave={onPieLeave}
                     style={{ cursor: 'pointer' }}
                   >
                     {equipmentStatusData.map((entry, index) => (
@@ -374,15 +374,15 @@ const Dashboard = () => {
                 </PieChart>
               </div>
               <div className="flex justify-around text-xs text-center mt-2">
-                <div onClick={() => handleEquipmentClick(equipmentStatusData[0], 0)} className="cursor-pointer">
+                <div className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
                   <p>Actueel</p>
                 </div>
-                <div onClick={() => handleEquipmentClick(equipmentStatusData[1], 1)} className="cursor-pointer">
+                <div className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
                   <p>Bijna verlopen</p>
                 </div>
-                <div onClick={() => handleEquipmentClick(equipmentStatusData[2], 2)} className="cursor-pointer">
+                <div className="cursor-pointer">
                   <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
                   <p>Verlopen</p>
                 </div>
@@ -399,14 +399,14 @@ const Dashboard = () => {
               icon={<FileText size={20} />}
               notifications={certificateNotifications}
               viewAllLink="/certificates"
-              onClick={() => navigate("/certificates")}
+              onClick={() => handleNotificationClick("/certificates")}
             />
             <NotificationCard
               title="Veiligheidsmiddelen & PBM's"
               icon={<Shield size={20} />}
               notifications={safetyNotifications}
               viewAllLink="/safety?tab=pbm"
-              onClick={() => navigate("/safety?tab=pbm")}
+              onClick={() => handleNotificationClick("/safety?tab=pbm")}
             />
           </div>
 
@@ -416,14 +416,14 @@ const Dashboard = () => {
               icon={<Calendar size={20} />}
               notifications={exerciseNotifications}
               viewAllLink="/safety?tab=exercises"
-              onClick={() => navigate("/safety?tab=exercises")}
+              onClick={() => handleNotificationClick("/safety?tab=exercises")}
             />
             <NotificationCard
               title="Recente incidenten"
               icon={<Bell size={20} />}
               notifications={incidentNotifications}
               viewAllLink="/safety?tab=incidents"
-              onClick={() => navigate("/safety?tab=incidents")}
+              onClick={() => handleNotificationClick("/safety?tab=incidents")}
             />
           </div>
         </div>
