@@ -28,6 +28,9 @@ const EmployeeDetail = () => {
   const location = useLocation();
   const { toast } = useToast();
 
+  console.log("Current employeeId from params:", employeeId);
+  console.log("Available employee IDs:", employees.map(e => e.id));
+
   // References for scrolling to sections
   const certificatesRef = useRef<HTMLDivElement>(null);
   const trainingsRef = useRef<HTMLDivElement>(null);
