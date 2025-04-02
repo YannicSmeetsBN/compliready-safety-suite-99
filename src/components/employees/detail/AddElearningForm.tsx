@@ -19,6 +19,17 @@ interface AddElearningFormProps {
   onCancel: () => void;
 }
 
+// Mock data for available e-learning modules
+const availableElearningModules = [
+  { id: "bhv-basic", name: "BHV Basiskennis", duration: "2 uur" },
+  { id: "bhv-aed", name: "AED gebruik", duration: "1 uur" },
+  { id: "fire-safety", name: "Brandveiligheid op de werkplek", duration: "45 min" },
+  { id: "vca-prep", name: "VCA examenvoorbereiding", duration: "3 uur" },
+  { id: "ergonomics", name: "Ergonomie op kantoor", duration: "1 uur" },
+  { id: "cyber-security", name: "Cyberveiligheid basis", duration: "90 min" },
+  { id: "first-aid", name: "EHBO basis", duration: "2 uur" },
+];
+
 export const AddElearningForm = ({ 
   employeeId, 
   onSuccess, 
@@ -39,7 +50,15 @@ export const AddElearningForm = ({
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "module") {
+      // Find the selected module and update the name
+      const selectedModule = availableElearningModules.find(module => module.id === value);
+      if (selectedModule) {
+        setFormData((prev) => ({ ...prev, name: selectedModule.name }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const formatDate = (dateString: string): string => {
@@ -86,15 +105,21 @@ export const AddElearningForm = ({
     <form onSubmit={handleSubmit} className="space-y-4 py-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="name">E-learning naam</Label>
-          <Input
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Bijv. EHBO Basis"
-            required
-          />
+          <Label htmlFor="module">E-learning module</Label>
+          <Select
+            onValueChange={(value) => handleSelectChange("module", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecteer e-learning module" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableElearningModules.map((module) => (
+                <SelectItem key={module.id} value={module.id}>
+                  {module.name} ({module.duration})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
@@ -133,7 +158,7 @@ export const AddElearningForm = ({
         <Button 
           type="submit" 
           className="bg-compliblue hover:bg-compliblue/90"
-          disabled={submitting}
+          disabled={submitting || !formData.name || !formData.date}
         >
           {submitting ? "Opslaan..." : "Opslaan"}
         </Button>

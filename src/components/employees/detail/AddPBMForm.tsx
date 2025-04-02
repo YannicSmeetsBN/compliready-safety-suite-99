@@ -3,6 +3,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue 
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { addPBMToEmployee } from "@/data/dataManager";
 import { Upload } from "lucide-react";
@@ -12,6 +19,19 @@ interface AddPBMFormProps {
   onSuccess: () => void;
   onCancel: () => void;
 }
+
+// Mock company PBM types
+const companyPBMTypes = [
+  "Veiligheidshelm",
+  "Veiligheidsschoenen",
+  "Veiligheidsbril",
+  "Gehoorbescherming",
+  "Werkhandschoenen",
+  "Ademhalingsbescherming",
+  "Veiligheidsharnas",
+  "Beschermende kleding",
+  "Andere"
+];
 
 export const AddPBMForm = ({ 
   employeeId, 
@@ -30,6 +50,10 @@ export const AddPBMForm = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -85,14 +109,21 @@ export const AddPBMForm = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="type">Type PBM</Label>
-          <Input
-            id="type"
-            name="type"
+          <Select
             value={formData.type}
-            onChange={handleInputChange}
-            placeholder="Bijv. Veiligheidshelm"
-            required
-          />
+            onValueChange={(value) => handleSelectChange("type", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecteer type PBM" />
+            </SelectTrigger>
+            <SelectContent>
+              {companyPBMTypes.map((pbmType) => (
+                <SelectItem key={pbmType} value={pbmType}>
+                  {pbmType}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
