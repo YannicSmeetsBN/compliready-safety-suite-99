@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -34,13 +35,11 @@ const Certificates = () => {
             </TabsList>
             
             <TabsContent value="employee" className="space-y-6">
-              <CertificateList />
+              <CertificateList isCompany={false} />
             </TabsContent>
             
             <TabsContent value="company" className="space-y-6">
-              <div className="p-4 border rounded-md bg-gray-50">
-                <p className="text-center text-gray-500">Bedrijfscertificaten worden hier weergegeven.</p>
-              </div>
+              <CertificateList isCompany={true} />
             </TabsContent>
           </Tabs>
         </main>

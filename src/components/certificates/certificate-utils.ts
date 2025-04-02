@@ -1,3 +1,4 @@
+
 import { Certificate, SortConfig, SortDirection } from "./types";
 
 // Apply filters to certificates
@@ -17,6 +18,18 @@ export const filterCertificates = (
     const matchesStatus = statusFilter ? cert.status === statusFilter : true;
 
     return matchesSearch && matchesType && matchesStatus;
+  });
+};
+
+// Filter certificates by whether they are company or employee certificates
+export const filterCertificatesByCategory = (
+  certificates: Certificate[],
+  isCompany: boolean
+): Certificate[] => {
+  return certificates.filter((cert) => {
+    // Company certificates have "Organisatie" as the employee
+    const isCompanyCertificate = cert.employee === "Organisatie";
+    return isCompany ? isCompanyCertificate : !isCompanyCertificate;
   });
 };
 
@@ -105,6 +118,24 @@ export const sampleCertificates: Certificate[] = [
     type: "ISO",
     issueDate: "20-11-2021",
     expiryDate: "20-11-2024",
+    status: "active",
+  },
+  {
+    id: "6",
+    name: "NEN 3140",
+    employee: "Organisatie",
+    type: "NEN",
+    issueDate: "15-04-2022",
+    expiryDate: "15-04-2025",
+    status: "active",
+  },
+  {
+    id: "7",
+    name: "VCA-VOL Bedrijf",
+    employee: "Organisatie",
+    type: "VCA",
+    issueDate: "01-01-2023",
+    expiryDate: "01-01-2026",
     status: "active",
   },
 ];

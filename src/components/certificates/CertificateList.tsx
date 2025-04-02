@@ -15,12 +15,17 @@ import { CertificateActions } from "./CertificateActions";
 import { CertificateToolbar } from "./CertificateToolbar";
 import { 
   filterCertificates, 
+  filterCertificatesByCategory,
   sortCertificates, 
   getNextSortDirection, 
   sampleCertificates 
 } from "./certificate-utils";
 
-export const CertificateList = () => {
+interface CertificateListProps {
+  isCompany?: boolean;
+}
+
+export const CertificateList = ({ isCompany = false }: CertificateListProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<Certificate["status"] | null>(null);
@@ -29,8 +34,11 @@ export const CertificateList = () => {
   // Demo data
   const certificates = sampleCertificates;
 
-  // Get unique certificate types for filter
-  const uniqueTypes = Array.from(new Set(certificates.map(cert => cert.type)));
+  // First filter by company/employee category
+  const categorizedCertificates = filterCertificatesByCategory(certificates, isCompany);
+
+  // Get unique certificate types for filter from the categorized certificates
+  const uniqueTypes = Array.from(new Set(categorizedCertificates.map(cert => cert.type)));
 
   // Handle sorting when clicking on a column header
   const handleSort = (key: keyof Certificate) => {
@@ -40,7 +48,7 @@ export const CertificateList = () => {
 
   // Apply filters and sorting to the certificates
   const filteredCertificates = filterCertificates(
-    certificates,
+    categorizedCertificates,
     searchTerm,
     typeFilter,
     statusFilter
@@ -66,7 +74,7 @@ export const CertificateList = () => {
                 onSort={handleSort}
               />
               <CertificateTableHead
-                label="Medewerker"
+                label={isCompany ? "Bedrijf" : "Medewerker"}
                 sortKey="employee"
                 sortConfig={sortConfig}
                 onSort={handleSort}
