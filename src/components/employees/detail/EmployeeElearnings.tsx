@@ -83,7 +83,10 @@ export const EmployeeElearnings = ({
                   <TableCell>{elearning.date}</TableCell>
                   <TableCell>{elearning.progress}</TableCell>
                   <TableCell>
-                    <EmployeeStatusBadge status={elearning.status} label={getStatusLabel(elearning.status)} />
+                    <EmployeeStatusBadge 
+                      status={elearning.status} 
+                      label={getStatusLabel(elearning.status)} 
+                    />
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 
