@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -42,6 +41,7 @@ const Dashboard = () => {
       title: "BHV Certificaat - Jan Jansen",
       date: "Verloopt over 30 dagen",
       status: "warning" as const,
+      link: "/employees/jan-jansen#trainings",
     }
   ];
 
@@ -76,16 +76,19 @@ const Dashboard = () => {
       title: "BHV Certificaat - Jan Janssen",
       date: "Verloopt over 30 dagen",
       status: "warning" as const,
+      link: "/employees/jan-jansen#trainings",
     },
     {
       title: "VCA Basis - Pieter Pietersen",
       date: "Verloopt over 14 dagen",
       status: "warning" as const,
+      link: "/employees/pieter-pietersen#certificates",
     },
     {
       title: "EHBO Diploma - Maria Willemsen",
       date: "Verlopen sinds 10-01-2023",
       status: "danger" as const,
+      link: "/employees/maria-willemsen#certificates",
     },
   ];
 
@@ -332,18 +335,16 @@ const Dashboard = () => {
                 </PieChart>
               </div>
               <div className="flex justify-around text-xs text-center mt-2">
-                <div onClick={() => handleCertificateClick(certificateStatusData[0], 0)} className="cursor-pointer">
-                  <div className="h-3 w-3 rounded-full bg-green-500 mx-auto mb-1"></div>
-                  <p>Actueel</p>
-                </div>
-                <div onClick={() => handleCertificateClick(certificateStatusData[1], 1)} className="cursor-pointer">
-                  <div className="h-3 w-3 rounded-full bg-orange-500 mx-auto mb-1"></div>
-                  <p>Bijna verlopen</p>
-                </div>
-                <div onClick={() => handleCertificateClick(certificateStatusData[2], 2)} className="cursor-pointer">
-                  <div className="h-3 w-3 rounded-full bg-red-500 mx-auto mb-1"></div>
-                  <p>Verlopen</p>
-                </div>
+                {certificateStatusData.map((item, index) => (
+                  <div 
+                    key={index}
+                    onClick={() => handleCertificateClick(item, index)} 
+                    className="cursor-pointer"
+                  >
+                    <div className={`h-3 w-3 rounded-full mx-auto mb-1`} style={{ backgroundColor: item.color }}></div>
+                    <p>{item.name}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -399,14 +400,14 @@ const Dashboard = () => {
               icon={<FileText size={20} />}
               notifications={certificateNotifications}
               viewAllLink="/certificates"
-              onClick={() => handleNotificationClick("/certificates")}
+              onClick={handleNotificationClick}
             />
             <NotificationCard
               title="Veiligheidsmiddelen & PBM's"
               icon={<Shield size={20} />}
               notifications={safetyNotifications}
               viewAllLink="/safety?tab=pbm"
-              onClick={() => handleNotificationClick("/safety?tab=pbm")}
+              onClick={handleNotificationClick}
             />
           </div>
 
@@ -416,14 +417,14 @@ const Dashboard = () => {
               icon={<Calendar size={20} />}
               notifications={exerciseNotifications}
               viewAllLink="/safety?tab=exercises"
-              onClick={() => handleNotificationClick("/safety?tab=exercises")}
+              onClick={handleNotificationClick}
             />
             <NotificationCard
               title="Recente incidenten"
               icon={<Bell size={20} />}
               notifications={incidentNotifications}
               viewAllLink="/safety?tab=incidents"
-              onClick={() => handleNotificationClick("/safety?tab=incidents")}
+              onClick={handleNotificationClick}
             />
           </div>
         </div>

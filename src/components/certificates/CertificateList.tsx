@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 import {
   Table,
@@ -23,13 +23,26 @@ import {
 
 interface CertificateListProps {
   isCompany?: boolean;
+  initialStatusFilter?: string | null;
 }
 
-export const CertificateList = ({ isCompany = false }: CertificateListProps) => {
+export const CertificateList = ({ 
+  isCompany = false, 
+  initialStatusFilter = null 
+}: CertificateListProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<Certificate["status"] | null>(null);
+  const [statusFilter, setStatusFilter] = useState<Certificate["status"] | null>(
+    initialStatusFilter as Certificate["status"] | null
+  );
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: null });
+
+  // Update status filter when initialStatusFilter changes
+  useEffect(() => {
+    if (initialStatusFilter) {
+      setStatusFilter(initialStatusFilter as Certificate["status"]);
+    }
+  }, [initialStatusFilter]);
 
   // Demo data
   const certificates = sampleCertificates;

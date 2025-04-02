@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,15 @@ import {
 const EmployeeDetail = () => {
   const { employeeId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  // References for scrolling to sections
+  const certificatesRef = useRef<HTMLDivElement>(null);
+  const trainingsRef = useRef<HTMLDivElement>(null);
+  const pbmsRef = useRef<HTMLDivElement>(null);
+  const elearningsRef = useRef<HTMLDivElement>(null);
+  const notesRef = useRef<HTMLDivElement>(null);
 
   // Update the state to use separate boolean flags for each section
   const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
@@ -42,6 +50,37 @@ const EmployeeDetail = () => {
   const trainings = employeeTrainings[employeeId] || [];
   const elearnings = employeeElearnings[employeeId] || [];
   const notes = employeeNotes[employeeId] || [];
+
+  // Handle hash navigation for scrolling to specific sections
+  useEffect(() => {
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      setTimeout(() => {
+        const scrollToSection = () => {
+          switch (hash) {
+            case 'certificates':
+              certificatesRef.current?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'trainings':
+              trainingsRef.current?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'pbms':
+              pbmsRef.current?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'elearnings':
+              elearningsRef.current?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'notes':
+              notesRef.current?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            default:
+              break;
+          }
+        };
+        scrollToSection();
+      }, 100);
+    }
+  }, [location.hash]);
 
   // If employee not found
   if (!employee) {
@@ -111,45 +150,55 @@ const EmployeeDetail = () => {
             />
             
             {/* Certificaten */}
-            <EmployeeCertificates 
-              certificates={certificates}
-              handleAdd={handleAdd}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-              handleDownload={handleDownload}
-            />
+            <div ref={certificatesRef}>
+              <EmployeeCertificates 
+                certificates={certificates}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                handleDownload={handleDownload}
+              />
+            </div>
             
             {/* PBM's */}
-            <EmployeePBMs 
-              pbms={pbms}
-              handleAdd={handleAdd}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-            />
+            <div ref={pbmsRef}>
+              <EmployeePBMs 
+                pbms={pbms}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </div>
             
             {/* Trainingen */}
-            <EmployeeTrainings 
-              trainings={trainings}
-              handleAdd={handleAdd}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-            />
+            <div ref={trainingsRef}>
+              <EmployeeTrainings 
+                trainings={trainings}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </div>
             
             {/* E-learnings */}
-            <EmployeeElearnings 
-              elearnings={elearnings}
-              handleAdd={handleAdd}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-            />
+            <div ref={elearningsRef}>
+              <EmployeeElearnings 
+                elearnings={elearnings}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </div>
             
             {/* Notities */}
-            <EmployeeNotes 
-              notes={notes}
-              handleAdd={handleAdd}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-            />
+            <div ref={notesRef}>
+              <EmployeeNotes 
+                notes={notes}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </div>
           </div>
         </main>
       </div>

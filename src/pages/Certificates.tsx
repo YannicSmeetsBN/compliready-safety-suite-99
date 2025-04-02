@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { 
@@ -13,6 +14,8 @@ import { CertificateList } from "@/components/certificates/CertificateList";
 
 const Certificates = () => {
   const [activeTab, setActiveTab] = useState("employee");
+  const [searchParams] = useSearchParams();
+  const statusFilter = searchParams.get("status");
 
   return (
     <div className="main-layout">
@@ -35,11 +38,11 @@ const Certificates = () => {
             </TabsList>
             
             <TabsContent value="employee" className="space-y-6">
-              <CertificateList isCompany={false} />
+              <CertificateList isCompany={false} initialStatusFilter={statusFilter} />
             </TabsContent>
             
             <TabsContent value="company" className="space-y-6">
-              <CertificateList isCompany={true} />
+              <CertificateList isCompany={true} initialStatusFilter={statusFilter} />
             </TabsContent>
           </Tabs>
         </main>
